@@ -26,12 +26,23 @@ public class Student {
         return this.studentName;
     }
 
-    public HashMap<String, ArrayList<Subject>> getSubjectMap() { return this.subjectMap; }
+    public ArrayList<Subject> getSubjectList(String subjectType) { return this.subjectMap.get(subjectType); }
+
+    public int getSignUpSJCnt(String subjectType) {
+        ArrayList<Subject> subjectList = this.subjectMap.get(subjectType);
+        return subjectList.size();
+    }
 
     public boolean addSubject(Subject subject) {
         try {
             ArrayList<Subject> subjectList = this.subjectMap.get(subject.getSubjectType());
+            if (subjectList.contains(subject)) {
+                System.out.println("이미 선택한 과목입니다.");
+                return false;
+            }
+
             subjectList.add(subject);
+            subjectMap.put(subject.getSubjectType(), subjectList);
         } catch (Exception e) {
             System.out.println("과목 등록이 실패하였습니다.");
             return false;

@@ -4,10 +4,8 @@ import camp.model.Score;
 import camp.model.Student;
 import camp.model.Subject;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.security.spec.ECField;
+import java.util.*;
 
 /**
  * Notification
@@ -26,6 +24,8 @@ public class CampManagementApplication {
     // 과목 타입
     private static String SUBJECT_TYPE_MANDATORY = "MANDATORY";
     private static String SUBJECT_TYPE_CHOICE = "CHOICE";
+    private static int SUBJECT_CNT_MANDATORY = 5;
+    private static int SUBJECT_CNT_CHOICE = 4;
 
     // index 관리 필드
     private static int studentIndex;
@@ -127,7 +127,7 @@ public class CampManagementApplication {
             System.out.println("2. 점수 관리");
             System.out.println("3. 프로그램 종료");
             System.out.print("관리 항목을 선택하세요...");
-            int input = sc.nextInt();
+            int input = Integer.parseInt(sc.nextLine());
 
             switch (input) {
                 case 1 -> displayStudentView(); // 수강생 관리
@@ -151,7 +151,7 @@ public class CampManagementApplication {
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
-            int input = sc.nextInt();
+            int input = Integer.parseInt(sc.nextLine());
 
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
@@ -165,24 +165,120 @@ public class CampManagementApplication {
         }
     }
 
+    // Getter Subject by SubjectId
+    private static Subject getSubjectById(String subjectId, String subjectType) {
+        if (subjectType.equals(SUBJECT_TYPE_MANDATORY)) {
+            for (int i = 0; i < SUBJECT_CNT_MANDATORY; i++) {
+                Subject subject = subjectStore.get(i);
+
+                if (subject.getSubjectId().equals(subjectId)) {
+                    return subject;
+                }
+            }
+        } else if (subjectType.equals(SUBJECT_TYPE_CHOICE)) {
+            for (int i = SUBJECT_CNT_MANDATORY; i < SUBJECT_CNT_CHOICE + SUBJECT_CNT_MANDATORY; i++) {
+                Subject subject = subjectStore.get(i);
+
+                if (subject.getSubjectId().equals(subjectId)) {
+                    return subject;
+                }
+            }
+        }
+
+        return null;
+    }
+
     // 수강생 등록
     private static void createStudent() {
         System.out.println("\n수강생을 등록합니다...");
         System.out.print("수강생 이름 입력: ");
-        String studentName = sc.next();
-        // 기능 구현 (필수 과목, 선택 과목)
-        System.out.println("필수 과목 목록");
+        String studentName = sc.nextLine();
 
-        for (int i = 0; i < subjectStore.size(); i++) {
-            Subject subject = subjectStore.get(i);
-            System.out.println((i + 1) + ". " + subject.getSubjectName());
-        }
-        System.out.println("필수 과목을 선택하세요.");
-        System.out.println("수강 과목 입력:");
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
+
+        boolean moreSignup = true;  // 과목 선택을 더 할 지 여부를 담을 boolean 변수
+        ArrayList<Subject> subjectList = student.getSubjectList(SUBJECT_TYPE_MANDATORY);  // 필수 과목 리스트
+        // 기능 구현 (필수 과목, 선택 과목)
+        while (moreSignup) {
+            System.out.println("\n[ 필수 과목 목록 ]");
+            for (int i = 0; i < SUBJECT_CNT_MANDATORY; i++) {
+                Subject subject = subjectStore.get(i);
+
+                // 현재 선택한 과목은 제외한 필수 과목의 ID와 이름 출력
+                if (subject.getSubjectType().equals(SUBJECT_TYPE_MANDATORY) && !subjectList.contains(subject)) {
+                    System.out.print(subject.getSubjectId().replace("SU", "") + ". " + subject.getSubjectName()+ "    ");
+                }
+            }
+
+            System.out.println("\n필수 과목을 선택하세요(최소 3과목 신청)...");
+            String subjectId = "SU" + sc.nextLine();
+
+            try {
+                 student.addSubject(getSubjectById(subjectId, SUBJECT_TYPE_MANDATORY));
+            } catch (Exception e) {
+                System.out.println("알 수 없는 과목을 선택하셨습니다.");
+                continue;
+            }
+
+            // 필수 과목 추가 신청 여부 결정하는 코드
+            int signUpCnt = student.getSignUpSJCnt(SUBJECT_TYPE_MANDATORY);  // 현재 신청한 필수 과목 수
+            if (signUpCnt < 3) {
+                moreSignup = true;
+            } else if (signUpCnt < SUBJECT_CNT_MANDATORY){
+                System.out.println("필수 과목을 더 신청하시겠습니까? (더 신청: more 입력)");
+                String more = sc.nextLine();
+                moreSignup = more.equals("more");
+            } else {
+                moreSignup = false;
+            }
+        }
+
+        moreSignup = true;  // 과목 선택을 더 할 지 여부를 boolean 타입으로 담는 변수
+        subjectList = student.getSubjectList(SUBJECT_TYPE_CHOICE);  // 선택 과목 리스트
+
+        // 기능 구현 (필수 과목, 선택 과목)
+        while (moreSignup) {
+            System.out.println("\n[ 선택 과목 목록 ]");
+            for (int i = SUBJECT_CNT_MANDATORY; i < SUBJECT_CNT_MANDATORY + SUBJECT_CNT_CHOICE; i++) {
+                Subject subject = subjectStore.get(i);
+
+                // 현재 선택한 과목은 제외한 선택 과목의 ID와 이름 출력
+                if (subject.getSubjectType().equals(SUBJECT_TYPE_CHOICE) && !subjectList.contains(subject)) {
+                    System.out.print(subject.getSubjectId().replace("SU", "") + ". " + subject.getSubjectName()+ "    ");
+                }
+            }
+
+            System.out.println("\n필수 과목을 선택하세요(최소 3과목 신청)...");
+            String subjectId = "SU" + sc.nextLine();
+
+            try {
+                student.addSubject(getSubjectById(subjectId, SUBJECT_TYPE_CHOICE));
+            } catch (Exception e) {
+                System.out.println("알 수 없는 과목을 선택하셨습니다.");
+                continue;
+            }
+
+            // 필수 과목 추가 신청 여부 결정하는 코드
+            int signUpCnt = student.getSignUpSJCnt(SUBJECT_TYPE_CHOICE);  // 현재 신청한 필수 과목 수
+            if (signUpCnt < 3) {
+                moreSignup = true;
+            } else if (signUpCnt < SUBJECT_CNT_CHOICE){
+                System.out.println("선택 과목을 더 신청하시겠습니까? (더 신청: more 입력)");
+                String more = sc.nextLine();
+                moreSignup = more.equals("more");
+            } else {
+                moreSignup = false;
+            }
+        }
+
         // 기능 구현
-        studentStore.add(student);
-        System.out.println("수강생 등록 성공!\n");
+        boolean signup = studentStore.add(student);
+        if (signup) {
+            System.out.println("수강생 등록 성공!\n");
+        } else {
+            System.out.println("수강생 등록 실패!\n");
+        }
+
     }
 
 
@@ -195,11 +291,10 @@ public class CampManagementApplication {
             System.out.println("\n등록된 수강생이 존재하지 않습니다.");
         } else {
             for (Student student : studentStore){
-                System.out.println("고유 번호 : " + student.getStudentId() + " / 이름 : " + student.getStudentName());
+                System.out.println("[" + student.getStudentId() + "] " + student.getStudentName());
             }
             System.out.println("\n수강생 목록 조회 성공!");
         }
-        System.out.println("\n수강생 목록 조회 성공!");
     }
 
     private static void displayScoreView() {
