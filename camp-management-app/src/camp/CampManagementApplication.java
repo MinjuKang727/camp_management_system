@@ -24,8 +24,8 @@ public class CampManagementApplication {
     // 과목 타입
     private static String SUBJECT_TYPE_MANDATORY = "MANDATORY";
     private static String SUBJECT_TYPE_CHOICE = "CHOICE";
-    private static int SUBJECT_CNT_MANDATORY = 5;
-    private static int SUBJECT_CNT_CHOICE = 4;
+//    private static int SUBJECT_CNT_MANDATORY = 5;
+//    private static int SUBJECT_CNT_CHOICE = 4;
 
     // index 관리 필드
     private static int studentIndex;
