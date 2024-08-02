@@ -168,27 +168,27 @@ public class CampManagementApplication {
     }
 
     // Getter Subject by SubjectId
-    private static Subject getSubjectById(String subjectId, String subjectType) {
-        if (subjectType.equals(SUBJECT_TYPE_MANDATORY)) {
-            for (int i = 0; i < SUBJECT_CNT_MANDATORY; i++) {
-                Subject subject = subjectStore.get(i);
-
-                if (subject.getSubjectId().equals(subjectId)) {
-                    return subject;
-                }
-            }
-        } else if (subjectType.equals(SUBJECT_TYPE_CHOICE)) {
-            for (int i = SUBJECT_CNT_MANDATORY; i < SUBJECT_CNT_CHOICE + SUBJECT_CNT_MANDATORY; i++) {
-                Subject subject = subjectStore.get(i);
-
-                if (subject.getSubjectId().equals(subjectId)) {
-                    return subject;
-                }
-            }
-        }
-
-        return null;
-    }
+//    private static Subject getSubjectById(String subjectId, String subjectType) {
+//        if (subjectType.equals(SUBJECT_TYPE_MANDATORY)) {
+//            for (int i = 0; i < SUBJECT_CNT_MANDATORY; i++) {
+//                Subject subject = subjectStore.get(i);
+//
+//                if (subject.getSubjectId().equals(subjectId)) {
+//                    return subject;
+//                }
+//            }
+//        } else if (subjectType.equals(SUBJECT_TYPE_CHOICE)) {
+//            for (int i = SUBJECT_CNT_MANDATORY; i < SUBJECT_CNT_CHOICE + SUBJECT_CNT_MANDATORY; i++) {
+//                Subject subject = subjectStore.get(i);
+//
+//                if (subject.getSubjectId().equals(subjectId)) {
+//                    return subject;
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
 
     // 수강생 등록
     private static void createStudent() {
