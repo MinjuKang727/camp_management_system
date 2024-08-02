@@ -171,9 +171,21 @@ public class CampManagementApplication {
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
         // 기능 구현 (필수 과목, 선택 과목)
+        System.out.println("필수 과목 목록");
 
+        for (int i = 0; i < subjectStore.size(); i++) {
+            Subject subject = subjectStore.get(i);
+            System.out.println((i + 1) + ". " + subject.getSubjectName());
+        }
+        System.out.println("필수 과목을 선택하세요.");
+
+
+
+
+        System.out.println("수강 과목 입력:");
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
         // 기능 구현
+        studentStore.add(student);
         System.out.println("수강생 등록 성공!\n");
     }
 
@@ -183,7 +195,14 @@ public class CampManagementApplication {
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
-
+        if (studentStore.isEmpty()) {
+            System.out.println("\n등록된 수강생이 존재하지 않습니다.");
+        } else {
+            for (Student student : studentStore){
+                System.out.println("고유 번호 : " + student.getStudentId() + " / 이름 : " + student.getStudentName());
+            }
+            System.out.println("\n수강생 목록 조회 성공!");
+        }
         System.out.println("\n수강생 목록 조회 성공!");
     }
 
@@ -327,14 +346,8 @@ public class CampManagementApplication {
 
 
         System.out.println("조회할 수강생의 과목을 입력해주세요: ");
-        String subjectName = "";
-        try {
-            subjectName = sc.next();
-        } catch (InputMismatchException e){
-            System.out.println("과목이 이상합니다.");
-            System.out.println("처음으로 돌아갑니다.");
-            inquireRoundGradeBySubject();
-        }
+        String subjectName = sc.next();
+
         String subjectNameScore = "";
         int subjectNameTestCnt = 0;
 
