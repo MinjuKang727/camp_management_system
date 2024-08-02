@@ -196,10 +196,10 @@ public class CampManagementApplication {
 
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
 
-        boolean moreSignup = true;  // 과목 선택을 더 할 지 여부를 담을 boolean 변수
+        boolean moreSignUp = true;  // 과목 선택을 더 할 지 여부를 담을 boolean 변수
         ArrayList<Subject> subjectList = student.getSubjectList(SUBJECT_TYPE_MANDATORY);  // 필수 과목 리스트
         // 기능 구현 (필수 과목, 선택 과목)
-        while (moreSignup) {
+        while (moreSignUp) {
             System.out.println("\n[ 필수 과목 목록 ]");
             for (int i = 0; i < SUBJECT_CNT_MANDATORY; i++) {
                 Subject subject = subjectStore.get(i);
@@ -223,21 +223,21 @@ public class CampManagementApplication {
             // 필수 과목 추가 신청 여부 결정하는 코드
             int signUpCnt = student.getSignUpSJCnt(SUBJECT_TYPE_MANDATORY);  // 현재 신청한 필수 과목 수
             if (signUpCnt < 3) {
-                moreSignup = true;
+                moreSignUp = true;
             } else if (signUpCnt < SUBJECT_CNT_MANDATORY){
                 System.out.println("필수 과목을 더 신청하시겠습니까? (더 신청: more 입력)");
                 String more = sc.nextLine();
-                moreSignup = more.equals("more");
+                moreSignUp = more.equals("more");
             } else {
-                moreSignup = false;
+                moreSignUp = false;
             }
         }
 
-        moreSignup = true;  // 과목 선택을 더 할 지 여부를 boolean 타입으로 담는 변수
+        moreSignUp = true;  // 과목 선택을 더 할 지 여부를 boolean 타입으로 담는 변수
         subjectList = student.getSubjectList(SUBJECT_TYPE_CHOICE);  // 선택 과목 리스트
 
         // 기능 구현 (필수 과목, 선택 과목)
-        while (moreSignup) {
+        while (moreSignUp) {
             System.out.println("\n[ 선택 과목 목록 ]");
             for (int i = SUBJECT_CNT_MANDATORY; i < SUBJECT_CNT_MANDATORY + SUBJECT_CNT_CHOICE; i++) {
                 Subject subject = subjectStore.get(i);
@@ -261,19 +261,19 @@ public class CampManagementApplication {
             // 필수 과목 추가 신청 여부 결정하는 코드
             int signUpCnt = student.getSignUpSJCnt(SUBJECT_TYPE_CHOICE);  // 현재 신청한 필수 과목 수
             if (signUpCnt < 3) {
-                moreSignup = true;
+                moreSignUp = true;
             } else if (signUpCnt < SUBJECT_CNT_CHOICE){
                 System.out.println("선택 과목을 더 신청하시겠습니까? (더 신청: more 입력)");
                 String more = sc.nextLine();
-                moreSignup = more.equals("more");
+                moreSignUp = more.equals("more");
             } else {
-                moreSignup = false;
+                moreSignUp = false;
             }
         }
 
         // 기능 구현
-        boolean signup = studentStore.add(student);
-        if (signup) {
+        boolean signUp = studentStore.add(student);
+        if (signUp) {
             System.out.println("수강생 등록 성공!\n");
         } else {
             System.out.println("수강생 등록 실패!\n");
