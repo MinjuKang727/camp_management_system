@@ -178,6 +178,10 @@ public class CampManagementApplication {
             System.out.println((i + 1) + ". " + subject.getSubjectName());
         }
         System.out.println("필수 과목을 선택하세요.");
+
+
+
+
         System.out.println("수강 과목 입력:");
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
         // 기능 구현
@@ -233,14 +237,23 @@ public class CampManagementApplication {
     }
 
     // 수강생의 과목별 시험 회차 및 점수 등록
-    private static void createScore() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
+    private static void createScore() throws InputMismatchException{
+        String studentId = getStudentId();
+
+        for(Student student : studentStore){
+            if(!student.getStudentId().equals(studentId)){
+                System.out.println("없는 수강생입니다.");
+                System.out.println("다시 돌아갑니다.");
+                createScore();
+            }
+        }
+
         System.out.println("시험 점수를 등록합니다...");
 
         System.out.println("과목 목록");
         for(int i = 0; i < subjectStore.size(); i++){
             Subject sj = subjectStore.get(i);
-            System.out.println(sj.getSubjectName());
+            System.out.println( i + 1 + ". " + sj.getSubjectName());
         }
 
         System.out.print("과목과 회차를 입력해주세요.: ");
@@ -251,8 +264,16 @@ public class CampManagementApplication {
             subjectName = sc.next();
             testCnt = sc.nextInt();
         } catch (InputMismatchException e){
-            System.out.println("과목이 아니거나 회차가 이상합니다.");
+            System.out.println("과목이 이상하거나 회차가 이상합니다.");
             createScore();
+        }
+
+        for(Subject sj : subjectStore){
+            if(!sj.getSubjectName().equals(subjectName)){
+                System.out.println("존재하지 않는 과목입니다.");
+                System.out.println("처음으로 돌아갑니다.");
+                createScore();
+            }
         }
 
         if(testCnt < 1 || testCnt > 10){
@@ -265,7 +286,7 @@ public class CampManagementApplication {
             if(score.getStudentId().equals(studentId) &&
                     score.getSubjectName().equals(subjectName) &&
                     score.getTestCnt() == testCnt){
-                System.out.println("이미 과목에 점수가 등록 된 수강생입니다.");
+                System.out.println("이미 해당 과목의 회차 점수가 등록 된 수강생입니다.");
             }
         }
 
@@ -296,7 +317,7 @@ public class CampManagementApplication {
     }
 
     // 수강생의 과목별 회차 점수 수정
-    private static void updateRoundScoreBySubject() {
+    private static void updateRoundScoreBySubject() throws InputMismatchException{
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         // 기능 구현 (수정할 과목 및 회차, 점수)
         System.out.println("시험 점수를 수정합니다...");
@@ -305,11 +326,48 @@ public class CampManagementApplication {
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
-    private static void inquireRoundGradeBySubject() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
+    private static void inquireRoundGradeBySubject() throws InputMismatchException{
+        String studentId = getStudentId();
+
         // 기능 구현 (조회할 특정 과목)
+        for(Score sc : scoreStore){
+            if(!sc.getStudentId().equals(studentId)){
+                System.out.println("조회할 수강생 아이디가 없습니다.");
+                System.out.println("다시 돌아갑니다.");
+                inquireRoundGradeBySubject();
+            }
+        }
+
+        System.out.println("과목 목록");
+        for(int i = 0; i < subjectStore.size(); i++){
+            Subject sj = subjectStore.get(i);
+            System.out.println( i + 1 + ". " + sj.getSubjectName());
+        }
+
+
+        System.out.println("조회할 수강생의 과목을 입력해주세요: ");
+        String subjectName = sc.next();
+
+        String subjectNameScore = "";
+        int subjectNameTestCnt = 0;
+
+        for(Score sc : scoreStore){
+            if(sc.getStudentId().equals(studentId) && sc.getSubjectName().equals(subjectName)){
+                subjectNameScore = sc.getRank();
+                subjectNameTestCnt = sc.getTestCnt();
+            }else {
+                System.out.println("해당 과목의 수강생 아이디가 없습니다.");
+                System.out.println("처음으로 돌아갑니다.");
+                inquireRoundGradeBySubject();
+            }
+        }
+
         System.out.println("회차별 등급을 조회합니다...");
         // 기능 구현
+
+        System.out.println("회차: " + subjectNameTestCnt);
+        System.out.println("등급: " + subjectNameScore);
+
         System.out.println("\n등급 조회 성공!");
     }
 
