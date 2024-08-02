@@ -39,7 +39,6 @@ public class CampManagementApplication {
 
     public static void main(String[] args) {
         setInitData();
-        try {
             displayMainView();
         } catch (Exception e) {
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
@@ -170,9 +169,17 @@ public class CampManagementApplication {
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
         // 기능 구현 (필수 과목, 선택 과목)
+        System.out.println("필수 과목 목록");
 
+        for (int i = 0; i < subjectStore.size(); i++) {
+            Subject subject = subjectStore.get(i);
+            System.out.println((i + 1) + ". " + subject.getSubjectName());
+        }
+        System.out.println("필수 과목을 선택하세요.");
+        System.out.println("수강 과목 입력:");
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
         // 기능 구현
+        studentStore.add(student);
         System.out.println("수강생 등록 성공!\n");
     }
 
@@ -180,7 +187,14 @@ public class CampManagementApplication {
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
-        System.out.println("\n수강생 목록 조회 성공!");
+        if (studentStore.isEmpty()) {
+            System.out.println("\n등록된 수강생이 존재하지 않습니다.");
+        } else {
+            for (Student student : studentStore){
+                System.out.println("고유 번호 : " + student.getStudentId() + " / 이름 : " + student.getStudentName());
+            }
+            System.out.println("\n수강생 목록 조회 성공!");
+        }
     }
 
     private static void displayScoreView() {
