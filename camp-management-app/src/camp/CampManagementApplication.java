@@ -178,7 +178,7 @@ public class CampManagementApplication {
         System.out.println("필수 과목 목록");
 
         for(Subject sj : subjectStore){
-            if(sj.getSubjectType().equals("MANDATORY")){
+            if(sj.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)){
                 System.out.println(sj.getSubjectId() + ". " + sj.getSubjectName());
             }
         }
@@ -233,7 +233,7 @@ public class CampManagementApplication {
         System.out.println("선택 과목 목록");
 
         for(Subject sj : subjectStore){
-            if(sj.getSubjectType().equals("CHOICE")){
+            if(sj.getSubjectType().equals(SUBJECT_TYPE_CHOICE)){
                 System.out.println(sj.getSubjectId() + ". " + sj.getSubjectName());
             }
         }
