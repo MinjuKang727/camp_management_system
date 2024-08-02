@@ -478,9 +478,8 @@ public class CampManagementApplication {
         System.out.println("시험 점수를 등록합니다...");
 
         System.out.println("과목 목록");
-        for(int i = 0; i < subjectStore.size(); i++){
-            Subject sj = subjectStore.get(i);
-            System.out.println( i + 1 + ". " + sj.getSubjectName());
+        for(Subject sj : subjectStore){
+            System.out.println(sj.getSubjectId() + ". " + sj.getSubjectName());
         }
 
         System.out.print("과목과 회차를 입력해주세요.: ");
