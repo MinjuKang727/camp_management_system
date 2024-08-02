@@ -32,4 +32,6 @@ public class Score {
 
     public String getRank() { return rank; }
 
+    public void setSubjectName(String subjectName1){ this.subjectName = subjectName1; }
+
 }
