@@ -45,6 +45,8 @@ public class CampManagementApplication {
         } catch (Exception e) {
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
         }
+
+
     }
 
     // 초기 데이터 생성
@@ -170,22 +172,123 @@ public class CampManagementApplication {
         System.out.println("\n수강생을 등록합니다...");
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
+
+
         // 기능 구현 (필수 과목, 선택 과목)
         System.out.println("필수 과목 목록");
 
-        for (int i = 0; i < subjectStore.size(); i++) {
-            Subject subject = subjectStore.get(i);
-            System.out.println((i + 1) + ". " + subject.getSubjectName());
+        for(Subject sj : subjectStore){
+            if(sj.getSubjectType().equals("MANDATORY")){
+                System.out.println(sj.getSubjectId() + ". " + sj.getSubjectName());
+            }
         }
-        System.out.println("필수 과목을 선택하세요.");
+
+        System.out.print("필수 과목 선택(띄어쓰기 없이 적어주세요) :");
+        List<String> manda = new ArrayList<>();
+        String[] mandatorySubject = sc.next().split(",");
+
+
+        try {
+            if (mandatorySubject[0].equals(mandatorySubject[mandatorySubject.length - 1])) {
+                System.out.println("선택하신 필수 과목 중 중복된 과목이 있습니다.");
+                System.out.println("처음으로 돌아갑니다.");
+                createStudent();
+            }
+
+            for (int i = 0; i <= mandatorySubject.length - 1; i++) {
+                if (mandatorySubject[i].equals(mandatorySubject[i + 1])) {
+                    System.out.println("선택하신 필수 과목 중 중복된 과목이 있습니다.");
+                    System.out.println("처음으로 돌아갑니다.");
+                    createStudent();
+                }
+            }
+        } catch (Exception e){
+            System.out.println("중복된 과목이 있습니다.");
+            System.out.println("처음으로 돌아갑니다.");
+            createStudent();
+        }
+
+
+        if(mandatorySubject.length < 3){
+            System.out.println("필수 과목은 최소 3개를 선택해야 합니다.");
+            System.out.println("띄어쓰기를 하면 안 됩니다.");
+            System.out.println("처음으로 돌아갑니다.");
+            createStudent();
+        }
 
 
 
+            for(String st : mandatorySubject){
+             switch (st){
+                 case "SU1", "SU2", "SU3", "SU4", "SU5" -> manda.add(st);
+                 default -> {
+                     System.out.println("필수 과목이 아니거나 잘못 입력했습니다.");
+                     System.out.println("처음으로 돌아갑니다.");
+                     createStudent();
+                 }
+             }
+            }
 
-        System.out.println("수강 과목 입력:");
-        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
-        // 기능 구현
+
+        System.out.println("선택 과목 목록");
+
+        for(Subject sj : subjectStore){
+            if(sj.getSubjectType().equals("CHOICE")){
+                System.out.println(sj.getSubjectId() + ". " + sj.getSubjectName());
+            }
+        }
+
+        System.out.print("선택 과목 선택(띄어쓰기 없이 적어주세요) :");
+        List<String> choice = new ArrayList<>();
+        String[] choiceSubject = sc.next().split(",");
+
+        try {
+            if (choiceSubject[0].equals(choiceSubject[choiceSubject.length - 1])) {
+                System.out.println("선택하신 선택 과목 중 중복된 과목이 있습니다.");
+                System.out.println("처음으로 돌아갑니다.");
+                createStudent();
+            }
+
+            for (int i = 0; i <= choiceSubject.length - 1; i++) {
+                if (choiceSubject[i].equals(choiceSubject[i + 1])) {
+                    System.out.println("선택하신 선택 과목 중 중복된 과목이 있습니다.");
+                    System.out.println("처음으로 돌아갑니다.");
+                    createStudent();
+                }
+            }
+        } catch (Exception e){
+            System.out.println("중복된 과목이 있습니다.");
+            System.out.println("처음으로 돌아갑니다.");
+            createStudent();
+        }
+
+
+        if(choiceSubject.length < 2){
+            System.out.println("선택 과목은 최소 2개를 선택해야 합니다.");
+            System.out.println("띄어쓰기를 하면 안 됩니다.");
+            System.out.println("처음으로 돌아갑니다.");
+            createStudent();
+        }
+
+
+
+        for(String st : choiceSubject){
+            switch (st){
+                case "SU6", "SU7", "SU8", "SU9" -> choice.add(st);
+                default -> {
+                    System.out.println("선택 과목이 아니거나 잘못 입력했습니다.");
+                    System.out.println("처음으로 돌아갑니다.");
+                    createStudent();
+                }
+            }
+        }
+
+        Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName, manda, choice);
+
+        System.out.println("수강생 등록 중입니다......");
+
         studentStore.add(student);
+
         System.out.println("수강생 등록 성공!\n");
     }
 
@@ -198,12 +301,12 @@ public class CampManagementApplication {
         if (studentStore.isEmpty()) {
             System.out.println("\n등록된 수강생이 존재하지 않습니다.");
         } else {
-            for (Student student : studentStore){
+            for (Student student : studentStore) {
                 System.out.println("고유 번호 : " + student.getStudentId() + " / 이름 : " + student.getStudentName());
             }
             System.out.println("\n수강생 목록 조회 성공!");
         }
-        System.out.println("\n수강생 목록 조회 성공!");
+
     }
 
     private static void displayScoreView() {
@@ -237,7 +340,7 @@ public class CampManagementApplication {
     }
 
     // 수강생의 과목별 시험 회차 및 점수 등록
-    private static void createScore() throws InputMismatchException{
+    private static void createScore() {
         String studentId = getStudentId();
 
         for(Student student : studentStore){
@@ -317,7 +420,7 @@ public class CampManagementApplication {
     }
 
     // 수강생의 과목별 회차 점수 수정
-    private static void updateRoundScoreBySubject() throws InputMismatchException{
+    private static void updateRoundScoreBySubject() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         // 기능 구현 (수정할 과목 및 회차, 점수)
         System.out.println("시험 점수를 수정합니다...");
@@ -326,7 +429,7 @@ public class CampManagementApplication {
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
-    private static void inquireRoundGradeBySubject() throws InputMismatchException{
+    private static void inquireRoundGradeBySubject() {
         String studentId = getStudentId();
 
         // 기능 구현 (조회할 특정 과목)
