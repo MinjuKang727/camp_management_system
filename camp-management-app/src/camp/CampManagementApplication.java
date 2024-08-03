@@ -176,7 +176,6 @@ public class CampManagementApplication {
         }
 
         System.out.println("존재하지 않는 수강생입니다.");
-        System.out.println("수강생 ID를 다시 입력해 주세요.");
         return null;
     }
 
@@ -205,7 +204,7 @@ public class CampManagementApplication {
     }
 
     // Get ScoreList by StudentId & SubjectId
-//    private static ArrayList<Score> getScoreList(String studentId, String subjectName) {
+//    private static List<Score> getScoreList(String studentId, String subjectName) {
 //        ArrayList<Score> scoreList = new ArrayList<>();
 //
 //        for (Score score : scoreStore) {
@@ -216,6 +215,8 @@ public class CampManagementApplication {
 //
 //        return scoreList;
 //    }
+
+
 
     // 수강생 등록
     private static void createStudent() {
@@ -358,72 +359,102 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() throws InputMismatchException{
-        String studentId = getStudentId();
-        Student student = getStudentById(studentId);
+        String studentId = "";
+        Student student = null;
+        boolean flag = true;
 
-        while (student == null) {
-            System.out.println("알 수 없는 수강생 번호를 입력하셨습니다. 수강생 번호는 양의 정수로 입력해 주세요.");
+        while (flag) {
             studentId = getStudentId();
             student = getStudentById(studentId);
+            if (student == null) {
+                System.out.println("알 수 없는 수강생 번호를 입력하셨습니다. 수강생 번호는 양의 정수로 입력해 주세요.");
+                studentId = getStudentId();
+                student = getStudentById(studentId);
+            } else {
+                flag = false;
+            }
         }
 
         System.out.println("시험 점수를 등록합니다...");
-        int typeInput = 0;
-        while (typeInput != 1 && typeInput != 2) {
-            System.out.println("\n과목 분류를 선택해주세요...");
-            System.out.println("1. 필수 과목    2. 선택 과목");
-            typeInput = Integer.parseInt(sc.nextLine());
+        System.out.println("\n과목 분류를 선택해주세요...");
+        System.out.println("1. 필수 과목    2. 선택 과목");
 
-            if (typeInput != 1 && typeInput != 2) { // checked Exception!!!!
-                System.out.println("알 수 없는 과목 분류입니다. 과목 분류는 1과 2 중에 선택해 주십시오.");
+        flag = true;
+        String subjectType = "";
+        while(flag) {
+            flag = false;
+            int typeInput = Integer.parseInt(sc.nextLine());
+            switch (typeInput) {
+                case 1 :
+                    subjectType = SUBJECT_TYPE_MANDATORY;
+                    break;
+                case 2 :
+                    subjectType = SUBJECT_TYPE_CHOICE;
+                    break;
+                default :
+                    System.out.println("알 수 없는 과목 분류입니다. 과목 분류는 1과 2 중에 선택해 주십시오.");
+                    flag = true;
             }
         }
-        String subjectType = SUBJECT_TYPE_MANDATORY;
-        if (typeInput == 2) {
-            subjectType = SUBJECT_TYPE_CHOICE;
-        }
 
-        System.out.println("[ 수강 중인 과목 목록 ]");
-        for(Subject subject : student.getSubjectList(subjectType)){
-            System.out.printf("%s. %s    ", subject.getSubjectId().replace(INDEX_TYPE_SUBJECT, ""), subject.getSubjectName());
-        }
+        flag = true;
+        String subjectName = "";
 
-        System.out.println("\n점수를 등록할 과목을 선택하세요...");
-        String subjectId = String.format("SU%s",sc.nextLine());
-        Subject selectedSubject = getSubjectById(subjectId, subjectType);
-
-        while (selectedSubject == null) {
-            System.out.println("알 수 없는 과목을 입력하셨습니다. 과목의 번호를 다시 입력해 주세요.");
-
+        while (flag) {
             System.out.println("[ 수강 중인 과목 목록 ]");
-            for(Subject subject : student.getSubjectList(subjectType)){
-                System.out.printf("%s. %s    ", subject.getSubjectId().replace(INDEX_TYPE_SUBJECT, ""), subject.getSubjectName());
+            List<Subject> subjectList = student.getSubjectList(subjectType);
+            for (int i = 0; i < subjectList.size(); i++) {
+                Subject subject = subjectList.get(i);
+                System.out.printf("%d. %s    ", i + 1, subject.getSubjectName());
             }
 
-            subjectId = String.format("%s%s",INDEX_TYPE_SUBJECT, sc.nextLine());
-            selectedSubject = getSubjectById(subjectId, subjectType);
-        }
+            System.out.println("\n점수를 등록할 과목을 선택하세요...");
+            int input = Integer.parseInt(sc.nextLine());
 
-        String subjectName = selectedSubject.getSubjectName();
+            if (input < 1 || input >= subjectList.size()) {
+                System.out.println("알 수 없는 과목을 선택하셨습니다. 1이상 " + subjectList.size() + "이하의 값을 입력해 주세요.");
+            } else {
+                flag = false;
+                Subject subject = subjectList.get(input);
+                subjectName = subject.getSubjectName();
+            }
+        }
 
         System.out.println("점수를 등록할 회차를 선택하세요...");
-        int testCnt = Integer.parseInt(sc.nextLine());
 
-        while (testCnt <= 0 || testCnt > 10) {
-            System.out.println("알 수 없는 회차를 입력하셨습니다. 회차는 1이상 10 이하의 정수로 입력해 주십시오.");
+        flag = true;
+        int testCnt = 0;
+
+        while (flag) {
             testCnt = Integer.parseInt(sc.nextLine());
+
+            if (testCnt <= 0 || testCnt > 10) {
+                System.out.println("알 수 없는 회차를 입력하셨습니다. 회차는 1이상 10 이하의 정수로 입력해 주십시오.");
+                testCnt = Integer.parseInt(sc.nextLine());
+            } else {
+                flag = false;
+            }
         }
 
         System.out.println("과목 점수를 입력하세요.");
-        int testScore = Integer.parseInt(sc.nextLine());
 
-        while (testScore < 0 || testScore > 100) {
-            System.out.println("알 수 없는 점수를 입력하셨습니다. 점수는 0이상 100이하의 정수로 입력해 주십시오.");
+        flag = true;
+        int testScore = 0;
+
+        while (flag) {
             testScore = Integer.parseInt(sc.nextLine());
+
+            if (testScore < 0 || testScore > 100) {
+                System.out.println("알 수 없는 점수를 입력하셨습니다. 점수는 0이상 100이하의 정수로 입력해 주십시오.");
+                testScore = Integer.parseInt(sc.nextLine());
+            } else {
+                flag = false;
+            }
         }
 
         String rank = ranked(testScore, subjectType);
         Score score = new Score(sequence(INDEX_TYPE_SCORE), studentId, subjectName, testCnt, testScore, rank);
+        // 이 부분 중복된 회차 성적 등록할 경우 앞의 성적 삭제 코드 필요
         scoreStore.add(score);
         System.out.println("\n점수 등록 성공!");
     }
