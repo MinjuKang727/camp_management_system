@@ -489,7 +489,7 @@ public class CampManagementApplication {
             createScore();
         }
 
-        for(Subject sj : subjectStore){
+
             switch (subjectName){
                 case "SU1", "SU2", "SU3", "SU4", "SU5", "SU6", "SU7", "SU8", "SU9" -> {}
                 default -> {
@@ -498,7 +498,7 @@ public class CampManagementApplication {
                     createScore();
                 }
             }
-        }
+
 
         if(testCnt < 1 || testCnt > 10){
             System.out.println("없는 회차 번호입니다.");
