@@ -476,7 +476,7 @@ public class CampManagementApplication {
                     int changeCnt;                         // 수강생의 바꿀 회차
                     int changeTestScore;                   // 수강생의 바꿀 점수
 
-                    try {                                   //회차와 점수의 입력값이 맞지 않을 때
+                    try {                                   //회차와 점수의 입력 값이 맞지 않을 때
                         changeCnt = sc.nextInt();
                         changeTestScore = sc.nextInt();
                     } catch (InputMismatchException e){
@@ -489,7 +489,7 @@ public class CampManagementApplication {
 
                     for(Subject sj : subjectStore){
                         if(sj.getSubjectName().equals(changeSubjectName)){
-                            subjectType = sj.getSubjectType();
+                            subjectType = sj.getSubjectType();                      //  subject 리스트에 같은 subjectName 이 있으면 그거에 맞는 타입을 받기
                             break;
                         }else {
                             System.out.println("과목이 없습니다.");
@@ -497,11 +497,11 @@ public class CampManagementApplication {
                         }
 
                     }
-                    score.setSubjectName(changeSubjectName);
-                    score.setTestCnt(changeCnt);
-                    score.setTestScore(changeTestScore);
-                    String changeRank = ranked(changeTestScore, subjectType);
-                    score.setRank(changeRank);
+                    score.setSubjectName(changeSubjectName);                    // 새로운 subject 수정
+                    score.setTestCnt(changeCnt);                                // 새로운 회차 수정
+                    score.setTestScore(changeTestScore);                        // 새로운 점수 수정
+                    String changeRank = ranked(changeTestScore, subjectType);       // 위에서 받은 과목 타입이랑 새로운 점수를 넣어서 새로운 등급을 받는다
+                    score.setRank(changeRank);                                      // 새로운 등급 수정
                     System.out.println("수정 완료");
                     break;
                 }else {
