@@ -463,19 +463,20 @@ public class CampManagementApplication {
             studentId = getStudentId();
 
             System.out.print("수강생의 과목, 회차를 선택해주세요: ");
-            String subjectName = "";
-            int cnt = 0;
-            boolean found = false;
+            String subjectName = "";  // 수강생 과목 선택
+            int cnt = 0;              // 수강생 회차 선택
+
             for(Score score : scoreStore) {
                 subjectName = sc.next();
                 cnt = sc.nextInt();
                 if (score.getStudentId().equals(studentId) && score.getTestCnt() == cnt && score.getSubjectName().equals(subjectName)) {
-                    found = true;
+
                     System.out.println("바꿀 과목과 회차, 점수를 입력해주세요: ");
-                    String changeSubjectName = sc.next();
-                    int changeCnt;
-                    int changeTestScore;
-                    try {
+                    String changeSubjectName = sc.next();  // 수강생의 바꿀 과목
+                    int changeCnt;                         // 수강생의 바꿀 회차
+                    int changeTestScore;                   // 수강생의 바꿀 점수
+
+                    try {                                   //회차와 점수의 입력값이 맞지 않을 때
                         changeCnt = sc.nextInt();
                         changeTestScore = sc.nextInt();
                     } catch (InputMismatchException e){
@@ -484,18 +485,17 @@ public class CampManagementApplication {
                         break;
                     }
 
-                    String subjectType = "";
-                    boolean subjectFound = false;
+                    String subjectType = "";            // 과목 타입 찾기
+
                     for(Subject sj : subjectStore){
                         if(sj.getSubjectName().equals(changeSubjectName)){
                             subjectType = sj.getSubjectType();
-                            subjectFound = true;
                             break;
-                        }
-                        if(!subjectFound){
+                        }else {
                             System.out.println("과목이 없습니다.");
                             break;
                         }
+
                     }
                     score.setSubjectName(changeSubjectName);
                     score.setTestCnt(changeCnt);
@@ -504,10 +504,12 @@ public class CampManagementApplication {
                     score.setRank(changeRank);
                     System.out.println("수정 완료");
                     break;
-                }
-                if (!found) {
+                }else {
                     System.out.println("입력한 과목, 회차가 없습니다.");
+                    break;
                 }
+
+
 
             }
             System.out.println("수정을 다시 하시겠습니까?(yes or no): ");
