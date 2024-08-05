@@ -5,15 +5,15 @@ public class Score {
     private String studentId;
     private String subjectName;
     private int testCnt;
-    private int tsetScore;
+    private int testScore;
     private String rank;
 
-    public Score(String seq, String studentId, String subjectName, int testCnt, int tsetScore, String rank) {
+    public Score(String seq, String studentId, String subjectName, int testCnt, int testScore, String rank) {
         this.scoreId = seq;
         this.studentId = studentId;
         this.subjectName = subjectName;
         this.testCnt = testCnt;
-        this.tsetScore = tsetScore;
+        this.testScore = testScore;
         this.rank = rank;
     }
 
@@ -28,8 +28,15 @@ public class Score {
 
     public int getTestCnt() { return testCnt; }
 
-    public int getTsetScore() { return tsetScore; }
+    public int getTestScore() { return testScore; }
 
     public String getRank() { return rank; }
 
+    public void setSubjectName(String subjectName){ this.subjectName = subjectName; }
+
+    public void setTestCnt(int testCnt) { this.testCnt = testCnt; }
+
+    public void setTestScore(int testScore){ this.testScore = testScore; }
+
+    public void setRank(String rank) { this.rank = rank; }
 }
