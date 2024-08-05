@@ -493,7 +493,6 @@ public class CampManagementApplication {
                             break;
                         }else {
                             System.out.println("과목이 없습니다.");
-                            break;
                         }
 
                     }
@@ -506,7 +505,6 @@ public class CampManagementApplication {
                     break;
                 }else {
                     System.out.println("입력한 과목, 회차가 없습니다.");
-                    break;
                 }
 
 
