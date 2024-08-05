@@ -547,4 +547,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+camp_management_system.iml
+
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,macos,windows,vs,visualstudiocode

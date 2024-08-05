@@ -1,6 +1,7 @@
 package camp;
 
 import camp.model.Score;
+import camp.model.Status;
 import camp.model.Student;
 import camp.model.Subject;
 
@@ -150,14 +151,22 @@ public class CampManagementApplication {
             System.out.println("수강생 관리 실행 중...");
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
-            System.out.println("3. 메인 화면 이동");
+            System.out.println("3. 수강생 정보 조회");
+            System.out.println("4. 수강생 정보 수정");
+            System.out.println("5. 상태별 수강생 목록 조회");
+            System.out.println("6. 수강생 삭제");
+            System.out.println("7. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = Integer.parseInt(sc.nextLine());
 
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> flag = false; // 메인 화면 이동
+                case 3 -> viewStudentDetails(); // 수강생 정보 조회
+                case 4 -> modifyStudent(); // 수강생 정보 수정
+                case 5 -> viewStudentsByStatus(); // 상태별 수강생 목록 조회
+                case 6 -> deleteStudent(); // 수강생 삭제
+                case 7 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -596,5 +605,75 @@ public class CampManagementApplication {
         }
     }
 
+    private static void viewStudentDetails() {
+        System.out.print("\n조회할 수강생의 고유 번호를 입력하세요: ");
+        String studentId = String.format("%s%s", INDEX_TYPE_STUDENT, sc.nextLine());
+        Student student = getStudentById(studentId);
+
+        if (student != null) {
+            System.out.printf("\n고유 번호: %s\n이름: %s\n상태: %s\n선택한 과목:\n",
+                    student.getStudentId(),
+                    student.getStudentName(),
+                    student.getStatus());
+
+            for (Subject subject : student.getSubjects()) {
+                System.out.printf("- %s\n", subject.getSubjectName());
+            }
+        }
+    }
+
+    private static void modifyStudent() {
+        System.out.print("\n수정할 수강생의 고유 번호를 입력하세요: ");
+        String studentId = String.format("%s%s", INDEX_TYPE_STUDENT, sc.nextLine());
+        Student student = getStudentById(studentId);
+
+        if (student != null) {
+            System.out.print("수정할 이름을 입력하세요(수정하지 않으려면 enter): ");
+            String newName = sc.nextLine();
+            if (!newName.isEmpty()) {
+                student.setStudentName(newName);
+            }
+
+            System.out.print("수정할 상태를 입력하세요(Green, Red, Yellow): ");
+            String newStatus = sc.nextLine();
+            try {
+                student.setStatus(Status.valueOf(newStatus));
+            } catch (IllegalArgumentException e) {
+                System.out.println("잘못된 상태 입력입니다. 수정하지 않았습니다.");
+            }
+
+            System.out.println("수강생 정보가 수정되었습니다.");
+        }
+    }
+
+    private static void viewStudentsByStatus() {
+        System.out.print("조회할 상태를 입력하세요(GREEN, RED, YELLOW): ");
+        String statusInput = sc.nextLine();
+
+        try {
+            Status status = Status.valueOf(statusInput);
+            System.out.printf("\n상태가 %s인 수강생 목록:\n", status);
+
+            for (Student student : studentStore) {
+                if (student.getStatus() == status) {
+                    System.out.printf("고유 번호: %s, 이름: %s\n", student.getStudentId(), student.getStudentName());
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("잘못된 상태 입력입니다.");
+        }
+    }
+
+    private static void deleteStudent() {
+        System.out.print("\n삭제할 수강생의 고유 번호를 입력하세요: ");
+        String studentId = String.format("%s%s", INDEX_TYPE_STUDENT, sc.nextLine());
+        Student student = getStudentById(studentId);
+
+        if (student != null) {
+            studentStore.remove(student);
+            scoreStore.removeIf(score -> score.getStudentId().equals(studentId));
+            System.out.println("수강생 및 관련 점수 기록이 삭제되었습니다.");
+        }
+    }
 
 }

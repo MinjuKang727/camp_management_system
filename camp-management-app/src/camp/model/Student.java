@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Student {
     private String studentId;
     private String studentName;
+    private Status status;
     private Map<String, List<Subject>> subjectMap;
 
     public Student(String seq, String studentName) {
@@ -48,5 +49,24 @@ public class Student {
         }
 
         return true;
+    }
+
+    public List<Subject> getSubjects() {
+        List<Subject> allSubjects = new ArrayList<>();
+        allSubjects.addAll(subjectMap.get("MANDATORY"));
+        allSubjects.addAll(subjectMap.get("CHOICE"));
+        return allSubjects;
+    }
+
+    public Status getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 }
