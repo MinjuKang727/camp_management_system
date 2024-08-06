@@ -647,7 +647,7 @@ public class CampManagementApplication {
     }
 
     private static void viewStudentsByStatus() {
-        System.out.print("조회할 상태를 입력하세요(GREEN, RED, YELLOW): ");
+        System.out.print("조회할 상태를 입력하세요(Green, Red, Yellow): ");
         String statusInput = sc.nextLine();
 
         try {
