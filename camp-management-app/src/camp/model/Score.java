@@ -8,21 +8,17 @@ public class Score {
     private int testScore;
     private String rank;
 
-    public Score(String seq, String studentId, String subjectName, int testCnt, int tsetScore, String rank) {
+    public Score(String seq, String studentId, String subjectName, int testCnt, int testScore, String rank) {
         this.scoreId = seq;
         this.studentId = studentId;
         this.subjectName = subjectName;
         this.testCnt = testCnt;
-        this.testScore = tsetScore;
+        this.testScore = testScore;
         this.rank = rank;
-
-        System.out.println("\n성적 등록 성공!");
     }
 
     // Getter
-    public String getScoreId() {
-        return scoreId;
-    }
+    public String getScoreId() { return scoreId; }
 
     public String getStudentId() { return studentId; }
 
@@ -34,10 +30,12 @@ public class Score {
 
     public String getRank() { return rank; }
 
-    public void updateScore(int testScore, String rank) {
-        this.testScore = testScore;
-        this.rank = rank;
-        System.out.println("\n점수 등록 성공!");
-    }
+    // SETTER
+    public void setSubjectName(String subjectName){ this.subjectName = subjectName; }
 
+    public void setTestCnt(int testCnt) { this.testCnt = testCnt; }
+
+    public void setTestScore(int testScore){ this.testScore = testScore; }
+
+    public void setRank(String rank) { this.rank = rank; }
 }

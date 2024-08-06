@@ -13,11 +13,9 @@ public class CheckValidity {
         }
     }
 
-    public boolean testCntRange(int testCnt) throws BadInputException {
-        if (testCnt <= 0 || testCnt > 10) {
-            throw new BadInputException("\n회차를 잘못 입력하셨습니다.", "1 이상 10 이하의 정수만 입력 가능합니다.");
-        } else {
-            return false;
+    public void testCntOver10(int curCnt) throws BadInputException {
+        if (curCnt > 10) {
+            throw new BadInputException("\n이미 10회차까지 성적을 등록하셨습니다.", "해당 회차의 점수를 수정하고 싶으시면, '수강생의 과목별 회차 점수 수정' 페이지를 이용해 주십시오.");
         }
     }
 
@@ -30,7 +28,7 @@ public class CheckValidity {
     }
 
     public boolean satisfySubjectCnt(Student student, String subjectType, int min, int total) throws BadInputException {
-        int joinedCnt = student.getJoinedSJCnt(subjectType);
+        int joinedCnt = student.getSubjectCnt(subjectType);
 
         if (joinedCnt < min) {
             throw new BadInputException("\n해당 과목의 최소 수강신청 수를 만족하지 못하였습니다.", "현재 " + joinedCnt + "과목 신청\n해당 과목 선택을 계속 진행하겠습니다.");
