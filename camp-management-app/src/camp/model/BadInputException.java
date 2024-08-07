@@ -6,7 +6,7 @@ public class BadInputException extends Exception{
     }
 
     public BadInputException(String type) {
-        super(type + "이 존재하지 않습니다.");
+        super(type + "이(가) 존재하지 않습니다.");
     }
 
     public BadInputException(String error, String hint) {

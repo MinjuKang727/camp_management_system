@@ -53,7 +53,7 @@ public class Student {
         List<Score> scoreList = this.scoreMap.get(subjectId);
 
         if (scoreList.isEmpty()) {
-            throw new BadInputException("해당 과목에 등록된 점수가 존재하지 않습니다.");
+            throw new BadInputException("해당 과목에 등록된 점수");
         }
 
         return scoreList;

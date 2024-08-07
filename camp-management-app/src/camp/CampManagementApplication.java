@@ -288,7 +288,7 @@ public class CampManagementApplication {
     // 과목 목록 출력
     // 과목 목록만 출력
     private void printSubjectList(String subjectType, List<Subject> subjectList) {
-        System.out.printf("[ 수강 중인 %s 과목 목록 ]", subjectType);
+        System.out.printf("[ 수강 중인 %s 과목 목록 ]\n", subjectType);
         for (Subject subject : subjectList) {
             System.out.printf("%s. %s    ", subject.getSubjectId(), subject.getSubjectName());
         }
@@ -297,7 +297,7 @@ public class CampManagementApplication {
 
     // 매개변수로 준 수강생의 해당 과목 점수 등록 회차도 함께 출력
     private void printSubjectList(String subjectType, Student student, List<Subject> subjectList) {
-        System.out.printf("[ 수강 중인 %s 과목 목록 ]", subjectType);
+        System.out.printf("[ 수강 중인 %s 과목 목록 ]\n", subjectType);
         for (Subject subject : subjectList) {
             int testCnt = student.getScoreCnt(subject.getSubjectId());
 
@@ -829,6 +829,7 @@ public class CampManagementApplication {
             String subjectType = this.inSubjectType(1);
             // 과목 선택
             Subject subject = this.inSubjectId(student, subjectType);
+            subjectType = subject.getSubjectType();
             String subjectId = subject.getSubjectId();
             int testCnt = 0;
 
@@ -844,7 +845,11 @@ public class CampManagementApplication {
             int newScore = this.inTestScore(score);
 
             if (newScore < 0) {
-                return;
+                String exit = this.enterType("\n현재 수강생의 과목별 회차 점수 수정을 종료하시겠습니까? (종료 : exit 입력)");
+
+                if (exit.equals("exit")) {
+                    return;
+                }
             }
 
             String newRank = this.ranked(newScore, subjectType);       // 위에서 받은 과목 타입이랑 새로운 점수를 넣어서 새로운 등급을 받는다
@@ -859,8 +864,7 @@ public class CampManagementApplication {
                     score.getRank()
             );
 
-            System.out.println("");
-            String exit = this.enterType("현재 수강생의 과목별 회차 점수 수정을 종료하시겠습니까? (종료 : exit 입력)");
+            String exit = this.enterType("\n현재 수강생의 과목별 회차 점수 수정을 종료하시겠습니까? (종료 : exit 입력)");
             if (exit.equals("exit")) {
                 flag = false;
             }
@@ -895,18 +899,18 @@ public class CampManagementApplication {
         System.out.println("회차별 등급을 조회중...\n");
         System.out.printf("%s. %s 수강생의 %s 과목 회차별 등급\n", student.getStudentId(), student.getStudentName(), subject.getSubjectName());
         System.out.println("----------------------------------------------------------------------------------------");
-        System.out.println("| 회차 |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10   |");
+        System.out.println("| 회차 |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  10  |");
         System.out.print("| 등급 |");
 
         for (int i = 0; i < 10; i++) {
             if (i >= scoreList.size()) {
-                System.out.print(" 미등록 |");
+                System.out.print("  -  |");
                 continue;
             }
             Score score = scoreList.get(i);
             String rank = score.getRank();
 
-            System.out.printf("   %s   |", rank);
+            System.out.printf("  %s  |", rank);
         }
         System.out.println("\n----------------------------------------------------------------------------------------");
     }
@@ -954,7 +958,7 @@ public class CampManagementApplication {
     private void viewStudentDetails(Student student) {
         System.out.println("----------------------------------");
         System.out.println("수강생 정보 조회 결과");
-        System.out.printf("\n 고유 번호 : %s\n이름: %s\n상태: %s\n수강 과목:\n",
+        System.out.printf("\n고유 번호 : %s\n이름: %s\n상태: %s\n수강 과목:\n",
                 student.getStudentId(),
                 student.getStudentName(),
                 student.getStatus()
@@ -1133,9 +1137,10 @@ public class CampManagementApplication {
         }
     }
 
+    // 특정 상태 수강생들의 필수 과목 평균 등급을 조회
     private void inquireAverageGradeByStatus() {
         System.out.println("\n==================================");
-        System.out.println("특정 상태 수강생들의 필수 과목 평균 등급을 조회합니다...\n");
+        System.out.println("특정 상태 수강생들의 필수 과목 평균 등급을 조회 중...\n");
         // 상태 입력
         Status status = this.inStatus();
 
@@ -1147,7 +1152,6 @@ public class CampManagementApplication {
         }
 
         System.out.println("\n[수강생 고유 번호] [수강생 이름] [필수 과목 평균 등급]");
-        System.out.println("(필수 과목 점수가 등록되어 있지 않은 수강생의 등급은 [ - ]로 표시됩니다.");
         for (Student student : studentList) {
             String studentId = student.getStudentId();
             String studentName = student.getStudentName();
@@ -1176,6 +1180,8 @@ public class CampManagementApplication {
                 String avgRank;avgRank = this.ranked(averageScore, SUBJECT_TYPE_MANDATORY);
                 System.out.printf("%s. %s [ %s등급 ]\n", studentId, studentName, avgRank);
             }
+            System.out.printf("[ 총 %d명의 수강생이 조회되었습니다. ]\n", studentList.size());
+            System.out.println("(필수 과목 점수가 등록되어 있지 않은 수강생의 등급은 [ - ]로 표시됩니다.)");
         }
     }
 }
