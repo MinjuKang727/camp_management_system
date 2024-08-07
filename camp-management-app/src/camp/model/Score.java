@@ -8,6 +8,7 @@ public class Score {
     private int testScore;
     private String rank;
 
+
     public Score(String seq, String studentId, String subjectName, int testCnt, int testScore, String rank) {
         this.scoreId = seq;
         this.studentId = studentId;

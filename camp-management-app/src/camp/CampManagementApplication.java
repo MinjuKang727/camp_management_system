@@ -213,7 +213,6 @@ public class CampManagementApplication {
     }
 
 
-
     // 수강생 등록
     private static void createStudent() {
         System.out.println("\n수강생을 등록합니다...");
@@ -403,6 +402,7 @@ public class CampManagementApplication {
                 System.out.printf("%d. %s    ", i + 1, subject.getSubjectName());
             }
 
+
             System.out.println("\n점수를 등록할 과목을 선택하세요...");
             int input = Integer.parseInt(sc.nextLine());
 
@@ -429,6 +429,8 @@ public class CampManagementApplication {
             } else {
                 flag = false;
             }
+
+
         }
 
         System.out.println("과목 점수를 입력하세요.");
@@ -449,21 +451,24 @@ public class CampManagementApplication {
 
         String rank = ranked(testScore, subjectType);
         Score score = new Score(sequence(INDEX_TYPE_SCORE), studentId, subjectName, testCnt, testScore, rank);
-        // 이 부분 중복된 회차 성적 등록할 경우 앞의 성적 삭제 코드 필요
+
+
         scoreStore.add(score);
+
+
         System.out.println("\n점수 등록 성공!");
     }
 
     // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() throws InputMismatchException {
-         // 관리할 수강생 고유 번호
+        // 관리할 수강생 고유 번호
         boolean flag = true;
 
         while (flag) {
             String studentId = "";
 
             System.out.println("수강생과 과목, 회차 목록");
-            for(Score score : scoreStore) {
+            for (Score score : scoreStore) {
                 if (score.getStudentId().equals(studentId)) {
                     System.out.println(score.getStudentId() + " / " + score.getSubjectName() + " / " + score.getTestCnt());
                 }
@@ -475,7 +480,7 @@ public class CampManagementApplication {
             String subjectName = "";  // 수강생 과목 선택
             int cnt = 0;              // 수강생 회차 선택
 
-            for(Score score : scoreStore) {
+            for (Score score : scoreStore) {
                 subjectName = sc.next();
                 cnt = sc.nextInt();
                 if (score.getStudentId().equals(studentId) && score.getTestCnt() == cnt && score.getSubjectName().equals(subjectName)) {
@@ -488,7 +493,7 @@ public class CampManagementApplication {
                     try {                                   //회차와 점수의 입력 값이 맞지 않을 때
                         changeCnt = sc.nextInt();
                         changeTestScore = sc.nextInt();
-                    } catch (InputMismatchException e){
+                    } catch (InputMismatchException e) {
                         System.out.println("회차랑 점수가 이상합니다.");
                         sc.next();
                         break;
@@ -496,11 +501,11 @@ public class CampManagementApplication {
 
                     String subjectType = "";            // 과목 타입 찾기
 
-                    for(Subject sj : subjectStore){
-                        if(sj.getSubjectName().equals(changeSubjectName)){
+                    for (Subject sj : subjectStore) {
+                        if (sj.getSubjectName().equals(changeSubjectName)) {
                             subjectType = sj.getSubjectType();                      //  subject 리스트에 같은 subjectName 이 있으면 그거에 맞는 타입을 받기
                             break;
-                        }else {
+                        } else {
                             System.out.println("과목이 없습니다.");
                         }
 
@@ -512,16 +517,15 @@ public class CampManagementApplication {
                     score.setRank(changeRank);                                      // 새로운 등급 수정
                     System.out.println("수정 완료");
                     break;
-                }else {
+                } else {
                     System.out.println("입력한 과목, 회차가 없습니다.");
                 }
-
 
 
             }
             System.out.println("수정을 다시 하시겠습니까?(yes or no): ");
             String type = sc.next();
-            if(type.equals("no")){
+            if (type.equals("no")) {
                 flag = false;
             }
         }
@@ -675,5 +679,12 @@ public class CampManagementApplication {
             System.out.println("수강생 및 관련 점수 기록이 삭제되었습니다.");
         }
     }
+
+    private void d() {
+
+
+
+    }
+
 
 }
