@@ -330,7 +330,8 @@ public class CampManagementApplication {
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 메인 화면 이동");
+            System.out.println("4. 특정 상태 수강생들의 필수 과목 평균 등급 조회");
+            System.out.println("5. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = Integer.parseInt(sc.nextLine());
 
@@ -338,7 +339,8 @@ public class CampManagementApplication {
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> flag = false; // 메인 화면 이동
+                case 4 -> inquireAverageGradeByStatus();
+                case 5 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -406,11 +408,11 @@ public class CampManagementApplication {
             System.out.println("\n점수를 등록할 과목을 선택하세요...");
             int input = Integer.parseInt(sc.nextLine());
 
-            if (input < 1 || input >= subjectList.size()) {
+            if (input < 1 || input > subjectList.size()) {
                 System.out.println("알 수 없는 과목을 선택하셨습니다. 1이상 " + subjectList.size() + "이하의 값을 입력해 주세요.");
             } else {
                 flag = false;
-                Subject subject = subjectList.get(input);
+                Subject subject = subjectList.get(input -1);
                 subjectName = subject.getSubjectName();
             }
         }
@@ -676,4 +678,66 @@ public class CampManagementApplication {
         }
     }
 
+    private static void inquireAverageGradeByStatus() {
+        System.out.println("\n특정 상태 수강생들의 필수 과목 평균 등급을 조회합니다...");
+        System.out.println("상태를 선택하세요 (Green, Red, Yellow):");
+        Status status = null;
+        try {
+            status = Status.valueOf(sc.nextLine());
+        } catch (IllegalArgumentException e) {
+            System.out.println("유효하지 않은 상태입니다.");
+            return;
+        }
+
+        List<Student> filteredStudents = new ArrayList<>();
+        for (Student student : studentStore) {
+            if (student.getStatus().equals(status)) {
+                filteredStudents.add(student);
+            }
+        }
+
+        //===================================================
+        if (filteredStudents.isEmpty()) {
+            System.out.println("해당 상태의 수강생이 없습니다.");
+            return;
+        }
+
+        System.out.println("\n[수강생 이름] [필수 과목 평균 등급]");
+        for (Student student : filteredStudents) {
+            List<Subject> mandatorySubjects = student.getSubjectList(SUBJECT_TYPE_MANDATORY);
+            if (mandatorySubjects.isEmpty()) {
+                System.out.println(student.getStudentName() + " - 필수 과목이 없습니다.");
+            }
+
+
+
+            int totalScore = 0;
+            int count = 0;
+
+            for (Subject subject : mandatorySubjects) {
+                for (Score score : scoreStore) {
+                    if (score.getStudentId().equals(student.getStudentId()) && score.getSubjectName().equals(subject.getSubjectName())) {
+                        totalScore += score.getTestScore(); // 점수 합산
+                        count++;
+                    }
+                }
+            }
+
+            double averageScore = 0;
+            if (count == 0) {
+                System.out.println(student.getStudentName() + " - 필수 과목의 점수가 없습니다.");
+            } else {
+                // 평균 점수 계산
+                averageScore = (double) totalScore / count;
+                 // 평균 점수를 기반으로 등급 계산
+
+            }
+
+
+            for(Student filter:filteredStudents){
+                System.out.println("수강생 이름: " + filter.getStudentName());
+                System.out.println("평균 등급: " + averageScore);
+            }
+        }
+    }
 }
