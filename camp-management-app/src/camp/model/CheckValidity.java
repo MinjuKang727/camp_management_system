@@ -15,7 +15,7 @@ public class CheckValidity {
     // 회차 범위 유효성 검사
     public void testCntOver10(int curCnt) throws BadInputException {
         if (curCnt > 10) {
-            throw new BadInputException("\n이미 10회차까지 성적을 등록하셨습니다.", "해당 회차의 점수를 수정하고 싶으시면, '수강생의 과목별 회차 점수 수정' 페이지를 이용해 주십시오.");
+            throw new BadInputException("\n이미 10회차까지 점수를 등록하셨습니다.", "해당 회차의 점수를 수정하고 싶으시면, '수강생의 과목별 회차 점수 수정' 페이지를 이용해 주십시오.");
         }
     }
 
@@ -31,7 +31,7 @@ public class CheckValidity {
     // 기존에 등록된 점수와 다른지 체크
     public void notSameScore(int newScore, int preScore) throws BadInputException {
         if (newScore == preScore) {
-            throw new BadInputException("입력하신 점수가 기존 회차에 등록되어 있는 점수와 동일합니다.", "현재 등록되어 있는 점수와 다른 점수를 입력해 주시거나 Enter 키를 입력하여 점수 수정을 종료해 주십시오.");
+            throw new BadInputException("입력한 점수가 기존 회차에 등록되어 있는 점수와 동일합니다.", "현재 등록되어 있는 점수와 다른 점수를 입력해 주십시오.");
         }
     }
 
@@ -39,7 +39,7 @@ public class CheckValidity {
     // 한글로만 혹은 영어로만 된 이름인지 체크
     public void nameIsEngOrKor(String name) throws BadInputException{
         if (!Pattern.matches("^[a-zA-Z]+$||^[가-힣]+$", name)) {
-            throw new BadInputException("\n잘못된 수강생명을 입력하셨습니다.", "영문 이름 혹은 한글 이름만 입력가능합니다.");
+            throw new BadInputException("\n잘못된 수강생 이름을 입력하셨습니다.", "영문 이름 혹은 한글 이름만 입력가능합니다.");
         }
     }
 
