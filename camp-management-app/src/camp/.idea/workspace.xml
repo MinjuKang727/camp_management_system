@@ -5,32 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bef8f1c7-b94a-4ab3-a4db-4e6f8108f4e5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CampManagementApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/CampManagementApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/CheckValidity.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/CheckValidity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Score.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Score.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Student.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "MinjuKang727"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;MinjuKang727&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/13BEST-0801/camp_management_system.git",
-    "accountId": "97a4f2e9-7e11-4422-9338-9fb2af187558"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/13BEST-0801/camp_management_system.git&quot;,
+    &quot;accountId&quot;: &quot;97a4f2e9-7e11-4422-9338-9fb2af187558&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 7
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2k5LViSO78SUWzT7Xfq0BKOlBVC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -40,7 +52,7 @@
   "keyToString": {
     "Application.CampManagementApplication.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "mjk",
+    "git-widget-placeholder": "Merging mjk",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/minju/IdeaProjects/NBCamp/camp-management-app/camp-management-app/src/camp",
     "node.js.detected.package.eslint": "true",
@@ -68,6 +80,15 @@
       <option name="presentableId" value="Default" />
       <updated>1722568517011</updated>
       <workItem from="1722568518019" duration="39855000" />
+      <workItem from="1722782593900" duration="1060000" />
+      <workItem from="1722822455761" duration="82000" />
+      <workItem from="1722822623476" duration="858000" />
+      <workItem from="1722823586213" duration="529000" />
+      <workItem from="1722824222979" duration="1754000" />
+      <workItem from="1722826024902" duration="30818000" />
+      <workItem from="1722860264375" duration="24000" />
+      <workItem from="1722860302750" duration="14000" />
+      <workItem from="1722860323092" duration="28404000" />
     </task>
     <servers />
   </component>
