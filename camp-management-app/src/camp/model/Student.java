@@ -9,6 +9,11 @@ public class Student {
     private Status status;
     private Map<String, List<Subject>> subjectMap;
 
+    // 점수 받는걸 넣으면 이거 하나만 쓰면 돼요
+    // 리스트로 하면은 리스트가 2개 필요하죠 (필수랑 선택)
+    // map (key / value) key: 필수 5개랑 선택 4개  value: 점수
+    // Map<String(subjectName),Integer(estScore)> 이름 = new (Linked)HashMap<>(); // 입력된 순서대로 출력 가능하니까
+
     public Student(String seq, String studentName) {
         this.studentId = seq;
         this.studentName = studentName;
@@ -26,7 +31,9 @@ public class Student {
         return this.studentName;
     }
 
-    public List<Subject> getSubjectList(String subjectType) { return this.subjectMap.get(subjectType); }
+    public List<Subject> getSubjectList(String subjectType) {
+        return this.subjectMap.get(subjectType);
+    }
 
     public int getSignUpSJCnt(String subjectType) {
         List<Subject> subjectList = this.subjectMap.get(subjectType);

@@ -9,6 +9,7 @@ public class Score {
     private String rank;
     private Status status;
 
+
     public Score(String seq, String studentId, String subjectName, int testCnt, int testScore, String rank) {
         this.scoreId = seq;
         this.studentId = studentId;
