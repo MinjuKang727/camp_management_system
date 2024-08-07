@@ -35,7 +35,13 @@ public class Score {
 
     public void setTestCnt(int testCnt) { this.testCnt = testCnt; }
 
-    public void setTestScore(int testScore){ this.testScore = testScore; }
+    public void setTestScore(int testScore, String rank){
+        this.testScore = testScore;
+
+        if (!this.rank.equals(rank)) {
+            this.setRank(rank);
+        }
+    }
 
     public void setRank(String rank) { this.rank = rank; }
 }
