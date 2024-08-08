@@ -419,16 +419,18 @@ public class CampManagementApplication {
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 특정 상태 수강생들의 필수 과목 평균 등급 조회");
-            System.out.println("5. 메인 화면 이동");
+            System.out.println("4. 수강생의 과목별 평균 등급 조회");
+            System.out.println("5. 특정 상태 수강생들의 필수 과목 평균 등급 조회");
+            System.out.println("6. 메인 화면 이동");
             int input = this.enterType("관리 항목을 선택하세요...", 1, 5, 0);
 
             switch (input) {
                 case 1 -> this.createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> this.updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> this.inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> this.inquireAverageGradeByStatus();
-                case 5 -> flag = false; // 메인 화면 이동
+                case 4 -> this.inquireSubjectAvg();
+                case 5 -> this.inquireAverageGradeByStatus();
+                case 6 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -737,30 +739,6 @@ public class CampManagementApplication {
         }
     }
 
-    // 선택 항목 출력
-//    private int inEditOrNot() {
-//        while (true) {
-//            System.out.println("----------------------------------");
-//            System.out.println("[ 실행 가능한 항목 ]");
-//            System.out.println("1. 현재 수강생의 다른 과목 수정");
-//            System.out.println("2. 다른 수강생의 성적 수정");
-//            System.out.println("3. 이전 페이지로 돌아가기");
-//            int input = this.enterType("실행 할 항목을 선택하십시오.", 1, 3, 0);
-//
-//            switch (input) {
-//                case 0 :
-//                    continue;
-//                case 1 :
-//                    return -1;
-//                case 2 :
-//                    return -2;
-//                case 3 :
-//                    return -3;
-//            }
-//        }
-//    }
-
-
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private void createScore() {
@@ -904,7 +882,7 @@ public class CampManagementApplication {
 
         for (int i = 0; i < 10; i++) {
             if (i >= scoreList.size()) {
-                System.out.print("  -  |");
+                System.out.printf("%s  -  |", (i == 9) ? " " : "");
                 continue;
             }
             Score score = scoreList.get(i);
@@ -971,6 +949,7 @@ public class CampManagementApplication {
             try {
                 List<Score> scoreList = student.getScoreList(subject.getSubjectId());
                 System.out.println("  [회차별 점수(등급)] ");
+                System.out.print("  ");
                 for (Score score : scoreList) {
                     System.out.printf(" %d회차 : %d(%s) /", score.getTestCnt(), score.getTestScore(), score.getRank());
                 }
@@ -1137,6 +1116,43 @@ public class CampManagementApplication {
         }
     }
 
+    // 수강생의 과목별 평균 등급 조회
+    private void inquireSubjectAvg() {
+        System.out.println("\n==================================");
+        System.out.println("수강생의 과목별 평균 등급을 조회 실행 중...\n");
+
+        // 수강생 고유 번호 입력
+        Student student = this.inStudentId();
+        System.out.printf("\n%s. %s의 과목별 평균 등급 조회 결과\n\n", student.getStudentId(), student.getStudentName());
+
+        this.inquireSubjectAvg(student, SUBJECT_TYPE_MANDATORY);
+        this.inquireSubjectAvg(student, SUBJECT_TYPE_CHOICE);
+    }
+
+    // 수강생의 과목 타입별 필수 과목 평균 등급 조회
+    private void inquireSubjectAvg(Student student, String subjectType) {
+        System.out.printf("[%s 과목의 과목별 평균 등급]\n", subjectType);
+
+        List<Subject> subjectList = student.getSubjectList(subjectType);
+        for (Subject subject : subjectList) {
+            double subjectTotal = 0;
+
+            try{
+                List<Score> scoreList = student.getScoreList(subject.getSubjectId());
+
+                for (Score score : scoreList) {
+                    subjectTotal += score.getTestScore();
+                }
+
+                double subjectAvg = subjectTotal / scoreList.size();
+                String subjectRank = this.ranked(subjectAvg, subjectType);
+                System.out.printf("- %s : %s 등급\n", subject.getSubjectName(), subjectRank);
+            } catch (BadInputException e) {
+                continue;
+            }
+        }
+    }
+
     // 특정 상태 수강생들의 필수 과목 평균 등급을 조회
     private void inquireAverageGradeByStatus() {
         System.out.println("\n==================================");
@@ -1158,31 +1174,34 @@ public class CampManagementApplication {
             List<Subject> mandatorySubjects = student.getSubjectList(SUBJECT_TYPE_MANDATORY);
 
             int totalScore = 0;
-            int count = mandatorySubjects.size();
+            int count = 0;
 
             for (Subject subject : mandatorySubjects) {
                 try {
                     List<Score> scoreList = student.getScoreList(subject.getSubjectId());
 
                     for (Score score : scoreList) {
-                            totalScore += score.getTestScore(); // 점수 합산
-                            count++;
+                        totalScore += score.getTestScore(); // 점수 합산
+                        count++;
                     }
-                } catch (BadInputException ignore) {}
+
+                } catch (BadInputException e) {
+                    continue;
+                }
             }
 
             if (count == 0) {
                 System.out.printf("%s. %s [ - ]\n", studentId, studentName);
             } else {
                 // 평균 점수 계산
-                double averageScore = 0;averageScore = (double) totalScore / count;
+                double averageScore = (double) totalScore / count;
                  // 평균 점수를 기반으로 등급 계산
-                String avgRank;avgRank = this.ranked(averageScore, SUBJECT_TYPE_MANDATORY);
+                String avgRank = this.ranked(averageScore, SUBJECT_TYPE_MANDATORY);
                 System.out.printf("%s. %s [ %s등급 ]\n", studentId, studentName, avgRank);
             }
-            System.out.printf("[ 총 %d명의 수강생이 조회되었습니다. ]\n", studentList.size());
-            System.out.println("(필수 과목 점수가 등록되어 있지 않은 수강생의 등급은 [ - ]로 표시됩니다.)");
         }
+        System.out.printf("[ 총 %d명의 수강생이 조회되었습니다. ]\n", studentList.size());
+        System.out.println("(필수 과목 점수가 등록되어 있지 않은 수강생의 등급은 [ - ]로 표시됩니다.)");
     }
 }
 
