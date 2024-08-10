@@ -2,7 +2,7 @@ package camp.model;
 
 import camp.model.Exception.BadInputException;
 import camp.model.Exception.NotExistException;
-import camp.model.Exception.NotReachedMinJoin;
+import camp.model.Exception.NotReachedMinException;
 
 import java.util.List;
 
@@ -112,7 +112,7 @@ public class Management {
                     String more = this.inOut.enterType(this.inOut.concatStrings("\n", subjectType, " 과목 수강 신청을 더 하시겠습니까? (더 수강 신청 more 입력)"));
                     flag = more.equals("more");
                 }
-            } catch (NotReachedMinJoin e) {
+            } catch (NotReachedMinException e) {
                 System.out.println(e.getMessage());
                 System.out.println(e.getHint());
             }

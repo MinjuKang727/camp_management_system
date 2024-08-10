@@ -2,8 +2,9 @@ package camp.model.Exception;
 
 public class NotExistException extends Exception {
     private StringBuilder sb;
+    private String message = "\n해당 값이 존재하지 않습니다.";
     private String hint = "";
-    private String message = "해당 값이 존재하지 않습니다.";
+
 
     public NotExistException(String object) { this.setMessage(object); }
 
