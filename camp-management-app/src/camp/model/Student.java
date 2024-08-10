@@ -1,5 +1,7 @@
 package camp.model;
 
+import camp.model.Exception.BadInputException;
+
 import java.util.*;
 import java.util.ArrayList;
 
@@ -60,14 +62,14 @@ public class Student {
     }
 
     public Score getScore(String subjectId, int testCnt){
-        List<Score> scoreList = scoreMap.get(subjectId);
+        List<Score> scoreList = this.scoreMap.get(subjectId);
         return scoreList.get(testCnt - 1);
     }
 
     public List<Subject> getAllSubjects() {
         List<Subject> allSubjects = new ArrayList<>();
-        allSubjects.addAll(subjectMap.get("필수"));
-        allSubjects.addAll(subjectMap.get("선택"));
+        allSubjects.addAll(this.subjectMap.get("필수"));
+        allSubjects.addAll(this.subjectMap.get("선택"));
         return allSubjects;
     }
 

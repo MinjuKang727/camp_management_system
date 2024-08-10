@@ -6,9 +6,9 @@ import java.util.List;
 public enum Status {
     GREEN, YELLOW, RED;
 
-    private static List<Student> greenStudentList = new ArrayList<>();
-    private static List<Student> yellowStudentList = new ArrayList<>();
-    private static List<Student> redStudentList = new ArrayList<>();
+    private List<Student> greenStudentList = new ArrayList<>();
+    private List<Student> yellowStudentList = new ArrayList<>();
+    private List<Student> redStudentList = new ArrayList<>();
 
     public List<Student> getStudentList() {
         if (this.equals(GREEN)) {
