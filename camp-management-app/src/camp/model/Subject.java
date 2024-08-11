@@ -12,9 +12,7 @@ public class Subject {
     }
 
     // Getter
-    public String getSubjectId() {
-        return subjectId;
-    }
+    public String getSubjectId() { return subjectId; }
 
     public String getSubjectName() {
         return subjectName;

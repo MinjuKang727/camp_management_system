@@ -67,10 +67,10 @@ public class Student {
     }
 
     public List<Subject> getAllSubjects() {
-        List<Subject> allSubjects = new ArrayList<>();
-        allSubjects.addAll(this.subjectMap.get("필수"));
-        allSubjects.addAll(this.subjectMap.get("선택"));
-        return allSubjects;
+        List<Subject> subjectList = new ArrayList<>();
+        subjectList.addAll(this.subjectMap.get(DataBase.SUBJECT_TYPE_MANDATORY));
+        subjectList.addAll(this.subjectMap.get(DataBase.SUBJECT_TYPE_CHOICE));
+        return subjectList;
     }
 
     public Status getStatus() {

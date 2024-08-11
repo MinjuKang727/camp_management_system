@@ -1,14 +1,16 @@
 package camp.model;
 
+import camp.model.Exception.AddSubjectException;
 import camp.model.Exception.BadInputException;
+import camp.model.Exception.ExitThisPage;
 import camp.model.Exception.NotExistException;
 
 import java.util.List;
 
 public class Management {
-    private DataBase db;
-    private InOut inOut;
-    private CheckValidity ck;
+    private final DataBase db;
+    private final InOut inOut;
+    private final CheckValidity ck;
 
     // 생성자
     public Management(InOut inOut) {
@@ -37,9 +39,12 @@ public class Management {
         // 상태 입력
         System.out.println("\n----------------------------------");
         System.out.println("수강생 상태 등록 중...\n");
-        Status status = this.inOut.inStatus();
+        Status status;
 
-        if (status == null) {
+        try {
+            status = this.inOut.inStatus();
+        } catch (ExitThisPage e) {
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -62,7 +67,7 @@ public class Management {
         try {
             List<Student> studentStore = this.db.getStudentStore();
 
-            this.ck.notEmptyStudentStore(studentStore);
+            this.ck.notEmptyStudentList(studentStore);
 
             for (Student student : studentStore) {
                 String studentId = student.getStudentId();
@@ -72,7 +77,6 @@ public class Management {
             System.out.printf("\n[ 총 %d명의 수강생이 조회되었습니다. ]\n", studentStore.size());
         } catch (NotExistException e) {
             System.out.println(e.getMessage());
-            System.out.println(e.getHint());
         }
 
     }
@@ -110,15 +114,13 @@ public class Management {
 
             try {
                 // 필수(or 선택) 과목 추가 신청 여부 결정하는 코드
-                flag = this.ck.satisfySubjectCnt(student, subjectType, minJoin, totalCnt);
+                this.ck.satisfySubjectCnt(student, subjectType, minJoin, totalCnt);
 
-                if (flag) {
-                    String more = this.inOut.enterType(this.inOut.concatStrings("\n", subjectType, " 과목 수강 신청을 더 하시겠습니까? (더 수강 신청 more 입력)"));
-                    flag = more.equals("more");
-                }
-            } catch (NotReachedMinJoin e) {
+                String more = this.inOut.enterType(this.inOut.concatStrings("\n", subjectType, " 과목 수강 신청을 더 하시겠습니까? (더 수강 신청 more 입력)"));
+                flag = more.equals("more");
+            } catch (AddSubjectException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
+                flag = e.getFlag();
             }
         }
     }
@@ -149,7 +151,6 @@ public class Management {
                 this.ck.roundUnder10(round);
             } catch (BadInputException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
                 System.out.println("\n현재 페이지를 종료하고 이전 페이지로 돌아갑니다.");
                 return;
             }
@@ -164,15 +165,23 @@ public class Management {
             Score score = new Score(this.db.sequence(DataBase.INDEX_TYPE_SCORE), studentId, subjectName, round, testScore, grade);
 
             // 점수 재확인
-            System.out.printf("%s번 학생의 %s 과목 %d회차 점수가 %d, 랭크가 %s로 등록됩니다.", score.getStudentId(), score.getSubjectName(), score.getRound(), score.getTestScore(), score.getGrade());
-
+            System.out.println("\n----------------------------------");
+            System.out.printf("%s. %s\n - 과목 : %s\n - 회차 : %d회차\n - 점수 : %d점\n - 랭크 : %s\n",
+                    score.getStudentId(),
+                    student.getStudentName(),
+                    score.getSubjectName(),
+                    score.getRound(),
+                    score.getTestScore(),
+                    score.getGrade()
+            );
+            System.out.println("\n가 등록되었습니다.");
             // 점수 저장
             student.addScore(subjectId, score);
-            this.db.addScore(score);
+//            this.db.addScore(score);
 
             try {
                 this.inOut.inExit("현재 수강생의 과목별 시험 회차 및 점수 등록");
-            } catch (Exception e) {
+            } catch (ExitThisPage e) {
                 System.out.println(e.getMessage());
                 return;
             }
@@ -191,11 +200,11 @@ public class Management {
             Subject subject = this.inOut.inSubjectId(student, subjectType);
             subjectType = subject.getSubjectType();
             String subjectId = subject.getSubjectId();
-            int round = 0;
+            int round;
 
             try {
                 round = this.inOut.inRound(student, subjectId);
-            } catch (BadInputException e) {
+            } catch (NotExistException e) {
                 System.out.println(e.getMessage());
                 return;
             }
@@ -222,7 +231,7 @@ public class Management {
 
             try {
                 this.inOut.inExit("현재 수강생의 과목별 회차 점수 수정");
-            } catch (Exception e) {
+            } catch (ExitThisPage e) {
                 System.out.println(e.getMessage());
                 return;
             }
@@ -244,7 +253,7 @@ public class Management {
         String subjectId = subject.getSubjectId();
 
         // 점수 리스트 가져오기
-        List<Score> scoreList = null;
+        List<Score> scoreList;
 
         try {
             scoreList = student.getScoreList(subjectId);
@@ -305,10 +314,7 @@ public class Management {
                     System.out.printf(" %d회차 : %d(%s) /", score.getRound(), score.getTestScore(), score.getGrade());
                 }
                 System.out.println();
-            } catch (NotExistException e) {
-                continue;
-            }
-
+            } catch (NotExistException ignore) {}
         }
     }
 
@@ -362,9 +368,12 @@ public class Management {
         Student student = this.inOut.inStudentId();
         Status preStatus = student.getStatus();  // 기존 상태
 
-        Status newStatus = this.inOut.inStatus(preStatus);
+        Status newStatus;
 
-        if (newStatus == null) {
+        try {
+            newStatus = this.inOut.inStatus(preStatus);
+        } catch (ExitThisPage e) {
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -380,9 +389,12 @@ public class Management {
         System.out.println("상태별 수강생 목록 조회 실행 중...\n");
 
         // 조회할 상태 입력
-        Status status = this.inOut.inStatus();
+        Status status;
 
-        if (status == null) {
+        try {
+            status = this.inOut.inStatus();
+        } catch (ExitThisPage e) {
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -392,10 +404,17 @@ public class Management {
         System.out.printf("\n상태가 %s인 수강생 목록:\n", status);
 
         try {
-            this.inOut.printStudentList(studentList);
+            if (studentList.isEmpty()) {
+                throw new NotExistException("등록된 수강생");
+            }
+
+            for (Student student : studentList) {
+                System.out.printf("%s. %s\n", student.getStudentId(), student.getStudentName());
+            }
+
+            System.out.printf("[ 총 %s명의 수강생이 조회되었습니다. ] \n", studentList.size());
         } catch (NotExistException e) {
             System.out.println(e.getMessage());
-            System.out.println(e.getHint());
         }
     }
 
@@ -413,17 +432,17 @@ public class Management {
 
         if (remove.equals("remove")) {
             // 점수 객체 삭제
-            List<Subject> subjectList = student.getAllSubjects();
-            for (Subject subject : subjectList) {
-                try {
-                    List<Score> scoreList = student.getScoreList(subject.getSubjectId());
-                    for (Score score : scoreList) {
-                        this.db.removeScore(score);
-                    }
-                } catch (NotExistException e) {
-                    continue;
-                }
-            }
+//            List<Subject> subjectList = student.getAllSubjects();
+//            for (Subject subject : subjectList) {
+//                try {
+//                    List<Score> scoreList = student.getScoreList(subject.getSubjectId());
+//                    for (Score score : scoreList) {
+//                        this.db.removeScore(score);
+//                    }
+//                } catch (NotExistException e) {
+//                    continue;
+//                }
+//            }
 
             // Status의 리스트에서 수강생 객체 삭제
             Status status = student.getStatus();
@@ -465,9 +484,7 @@ public class Management {
                 double subjectAvg = subjectTotal / scoreList.size();
                 String subejectAvgGrade = this.getGrade(subjectAvg, subjectType);
                 System.out.printf("- %s : %s 등급\n", subject.getSubjectName(), subejectAvgGrade);
-            } catch (NotExistException e) {
-                continue;
-            }
+            } catch (NotExistException ignore) {}
         }
     }
 
@@ -476,9 +493,12 @@ public class Management {
         System.out.println("\n==================================");
         System.out.println("특정 상태 수강생들의 필수 과목 평균 등급을 조회 중...\n");
         // 상태 입력
-        Status status = this.inOut.inStatus();
+        Status status;
 
-        if (status == null) {
+        try {
+            status = this.inOut.inStatus();
+        } catch (ExitThisPage e) {
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -488,13 +508,12 @@ public class Management {
             this.ck.notEmptyStudentList(studentList);
         } catch (NotExistException e) {
             System.out.println(e.getMessage());
-            System.out.println(e.getHint());
             return;
         }
 
         System.out.println("\n----------------------------------");
         System.out.printf("[ 상태 : %s ] 수강생들의 필수 과목 평균 등급 조회 결과\n", status);
-        assert studentList != null;
+
         for (Student student : studentList) {
             String studentId = student.getStudentId();
             String studentName = student.getStudentName();
@@ -511,10 +530,7 @@ public class Management {
                         totalScore += score.getTestScore(); // 점수 합산
                         count++;
                     }
-
-                } catch (NotExistException e) {
-                    continue;
-                }
+                } catch (NotExistException ignore) {}
             }
 
             if (count == 0) {

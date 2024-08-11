@@ -6,11 +6,12 @@ import camp.model.Exception.NotExistException;
 import java.util.*;
 
 public class DataBase {
-    // 데이터 저장소
+    // 데이터 저장소 리스트
     private List<Student> studentStore;
     private List<Subject> subjectStore;
-    private List<Score> scoreStore;
+//    private List<Score> scoreStore;
 
+    // 데이터 저장소 Map
     private Map<String, Student> studentMap;  // (key, value) = (studentId, Student)
     private Map<String, Map<String, Subject>>  subjectMap;  // {key, (key, value)} = {subjectType, (subjectId, Subject)}
 
@@ -18,8 +19,12 @@ public class DataBase {
     public static final String SUBJECT_TYPE_MANDATORY = "필수";
     public static final String SUBJECT_TYPE_CHOICE = "선택";
     public static final String SUBJECT_TYPE_ALL = "전체";
-    private int SUBJECT_CNT_MANDATORY = 5;  // 전체 필수 과목 수
-    private int SUBJECT_CNT_CHOICE = 4;  // 전체 선택 과목 수
+
+    // 과목 수
+    private int SUBJECT_CNT_MANDATORY;  // 전체 필수 과목 수
+    private int SUBJECT_CNT_CHOICE;  // 전체 선택 과목 수
+
+    // 최소 신청 과목 수
     private final int SUBJECT_MIN_MANDATORY;  // 필수 과목 최소 수강 신청 수
     private final int SUBJECT_MIN_CHOICE;  // 선택 과목 최소 수강 신청 수
 
@@ -96,7 +101,7 @@ public class DataBase {
                         SUBJECT_TYPE_CHOICE
                 )
         );
-        this.scoreStore = new ArrayList<>();
+//        this.scoreStore = new ArrayList<>();
 
         this.studentMap = new HashMap<>();
         this.subjectMap = Map.of(
@@ -110,27 +115,42 @@ public class DataBase {
             Map<String, Subject> subjectMap2 = this.subjectMap.get(subjectType);
             subjectMap2.put(subjectId, subject);
         }
+
+        this.SUBJECT_CNT_MANDATORY = this.subjectMap.get(SUBJECT_TYPE_MANDATORY).size();
+        this.SUBJECT_CNT_CHOICE = this.subjectMap.get(SUBJECT_TYPE_CHOICE).size();
     }
 
     // index 자동 증가
     public String sequence(String type) {
+        StringBuilder sb = new StringBuilder();
+
         switch (type) {
             case INDEX_TYPE_STUDENT -> {
                 this.studentIndex++;
-                return INDEX_TYPE_STUDENT + this.studentIndex;
+                sb.append(INDEX_TYPE_STUDENT);
+                sb.append(this.studentIndex);
+
+                return sb.toString();
             }
             case INDEX_TYPE_SUBJECT -> {
                 this.subjectIndex++;
-                return INDEX_TYPE_SUBJECT + this.subjectIndex;
+                sb.append(INDEX_TYPE_SUBJECT);
+                sb.append(this.subjectIndex);
+
+                return sb.toString();
             }
             default -> {
                 this.scoreIndex++;
-                return INDEX_TYPE_SCORE + this.scoreIndex;
+                sb.append(INDEX_TYPE_SCORE);
+                sb.append(this.scoreIndex);
+
+                return sb.toString();
             }
         }
     }
 
 
+    // GETTER
     // Get Student by studentId
     public Student getStudentById(String studentId) throws NotExistException {
         if (this.studentMap.containsKey(studentId)) {
@@ -141,7 +161,7 @@ public class DataBase {
     }
 
     // Get Subject by SubjectId
-    public Subject getSubjectById(String subjectType, String subjectId) throws BadInputException {
+    public Subject getSubjectById(String subjectType, String subjectId) throws NotExistException {
         Map<String, Subject> sm;
 
         if (subjectType.equals(SUBJECT_TYPE_CHOICE)) {
@@ -160,7 +180,7 @@ public class DataBase {
             }
         }
 
-        throw new BadInputException("해당 수강생 고유 번호");
+        throw new NotExistException("해당 과목 고유 번호");
     }
 
     /**
@@ -174,8 +194,6 @@ public class DataBase {
 
         return subjectList;
     }
-
-    // GETTER
 
     /**
      * studentStore 비어있는지 확인 메서드 (CheckValidity에서 등록된 수강생이 존재하는지 유효성 검사를 위해 사용)
@@ -206,11 +224,11 @@ public class DataBase {
         this.studentStore.remove(student);
     }
 
-    public void addScore(Score score) {
-        this.scoreStore.add(score);
-    }
-
-    public void removeScore(Score score) {
-        this.scoreStore.remove(score);
-    }
+//    public void addScore(Score score) {
+//        this.scoreStore.add(score);
+//    }
+//
+//    public void removeScore(Score score) {
+//        this.scoreStore.remove(score);
+//    }
 }
