@@ -1,36 +1,33 @@
 package camp.model.Exception;
 
 public class NotExistException extends Exception {
-    private StringBuilder sb;
-    private String message = "\n해당 값이 존재하지 않습니다.";
-    private String hint = "";
+    private String message;
 
 
     public NotExistException(String object) { this.setMessage(object); }
 
     public NotExistException(String object, String hint) {
-        this.hint = hint;
         this.setMessage(object);
+        this.setHint(hint);
     }
 
     // GETTER
     public String getMessage() { return this.message; }
 
-    public String getHint() { return this.hint; }
-
     // SETTER
     private void setMessage(String object) {
-        this.sb = new StringBuilder();
-        this.sb.append(object);
-        this.sb.append("이(가) 존재하지 않습니다.");
+        StringBuilder sb = new StringBuilder();
+        sb.append(object);
+        sb.append("이(가) 존재하지 않습니다.");
 
         this.message = sb.toString();
     }
 
     private void setHint (String hint) {
-        this.sb = new StringBuilder();
-        this.sb.append(" hint : ");
-        this.sb.append(hint);
-        this.hint = this.sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.message);
+        sb.append("\n hint : ");
+        sb.append(hint);
+        this.message = sb.toString();
     }
 }

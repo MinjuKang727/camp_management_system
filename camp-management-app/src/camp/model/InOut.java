@@ -1,16 +1,15 @@
 package camp.model;
 
 import camp.model.Exception.BadInputException;
+import camp.model.Exception.ExitThisPage;
 import camp.model.Exception.NotExistException;
-
 import java.util.List;
 import java.util.Scanner;
 
 public class InOut {
-    private StringBuilder sb;
-    private Scanner sc;
-    private CheckValidity ck;
-    private DataBase db;
+    private final Scanner sc;
+    private final CheckValidity ck;
+    private final DataBase db;
 
     public InOut(DataBase db) {
         this.sc = new Scanner(System.in);
@@ -21,28 +20,28 @@ public class InOut {
     /**
      * StringBuilder로 문자 연결 후, 합친 문자열 반환한다.
      *
-     * @params String... str 가변 매개변수 문자열
+     * @params String...str 가변 매개변수 문자열
      * @return 매개변수를 모두 합친 문자열
      */
     public String concatStrings(String...str) {
-        this.sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         for (String s : str) {
-            this.sb.append(s);
+            sb.append(s);
         }
 
-        return this.sb.toString();
+        return sb.toString();
     }
 
-    public String concatString(String title , boolean flag) {
-        this.sb = new StringBuilder();
-        this.sb.append(title);
+    public String activatedOrNot(boolean flag, String menu) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(menu);
 
         if (flag) {
-            this.sb.append(" (비활성)");
+            sb.append(" (비활성)");
         }
 
-        return this.sb.toString();
+        return sb.toString();
     }
 
 
@@ -55,17 +54,17 @@ public class InOut {
      * @param msg : 입력 안내 메세지 문자열
      * @param min : 입력 유효값 범위의 최소 정수
      * @param max : 입력 유효값 범위의 최대 정수
-     * @param noStudent : DataBase의 studentStore에 저장된 Student 객체가 존재하는지 여부
+     * @param flag : DataBase의 studentStore에 저장된 Student 객체가 존재하는지 여부
      * @param notAllowed : 선택이 허용되지 않는 값 리스트
      * @return 유효 입력값(min 이상 max 이하의 ((noStudent == true인 경우,) notAllowed에 포함되지 않은) 양의 정수
      */
-    public int enterType(String msg, int min, int max, boolean noStudent, List<Integer> notAllowed, int exception) {
+    public int enterType(String msg, int min, int max, boolean flag, List<Integer> notAllowed, int exception) {
             System.out.println(msg);
 
             try {
                 String strInput = sc.nextLine();
                 int input = this.ck.isNumber(strInput);
-                if (noStudent) {
+                if (flag) {
                     this.ck.selecterRange(min, max, input, notAllowed);
                 } else {
                     this.ck.selecterRange(min, max, input);
@@ -74,24 +73,20 @@ public class InOut {
                 return input;
             } catch (BadInputException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
                 return exception;
             }
     }
 
     public int enterType(String msg, int min, int max, int exception) {
             System.out.println(msg);
-            int input = exception;
-            String exit = "";
 
             try {
                 String strInput = sc.nextLine();
-                input = this.ck.isNumber(strInput);
+                int input = this.ck.isNumber(strInput);
                 this.ck.selecterRange(min, max, input);
                 return input;
             } catch (BadInputException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
                 return exception;
             }
     }
@@ -139,7 +134,6 @@ public class InOut {
                 return studentName;
             } catch (BadInputException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
             }
         }
     }
@@ -161,13 +155,12 @@ public class InOut {
                 return newName;
             } catch (BadInputException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
             }
 
             try {
                 this.inExit("수강생 이름 수정");
-            } catch (Exception exception) {
-                System.out.println(exception.getMessage());
+            } catch (ExitThisPage e) {
+                System.out.println(e.getMessage());
                 return "ex1t";
             }
         }
@@ -182,10 +175,10 @@ public class InOut {
             try {
                 System.out.println("----------------------------------");
                 String studentId = this.enterType(DataBase.INDEX_TYPE_STUDENT);
-                return this.db.getStudentById(studentId);
+                Student student = this.db.getStudentById(studentId);
+                return student;
             } catch (NotExistException e) {
                 System.out.println(e.getMessage());
-                System.out.println(e.getHint());
             }
         }
     }
@@ -200,14 +193,15 @@ public class InOut {
             try {
                 System.out.println("----------------------------------");
                 String studentId = this.enterType(DataBase.INDEX_TYPE_STUDENT);
-                return this.db.getStudentById(studentId);
+                Student student = this.db.getStudentById(studentId);
+                return student;
             } catch (NotExistException notExistException) {
                 System.out.println(notExistException.getMessage());
 
                 try {
                     this.inExit("수강생 상태 수정");
-                } catch (Exception exception) {
-                    System.out.println(exception.getMessage());
+                } catch (ExitThisPage e) {
+                    System.out.println(e.getMessage());
                     return null;
                 }
             }
@@ -219,15 +213,23 @@ public class InOut {
      *
      * @return 상태 객체
      */
-    public Status inStatus() {
+    public Status inStatus() throws ExitThisPage {
         while (true) {
-            String strStatus = this.enterType("수강생 상태를 입력해 주십시오. (상태 종류 : GREEN, YELLOW, RED)");
+            System.out.println("1. GREEN");
+            System.out.println("2. YELLOW");
+            System.out.println("3. RED");
+            System.out.println("4. 이전 페이지로 돌아가기");
+            int input = this.enterType("상태를 선택해 주십시오.", 1, 4, 0);
 
-            try {
-                return this.ck.statusInGYR(strStatus);
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
+            switch (input) {
+                case 1 :
+                    return Status.GREEN;
+                case 2 :
+                    return Status.YELLOW;
+                case 3 :
+                    return Status.RED;
+                case 4 :
+                    throw new ExitThisPage();
             }
         }
     }
@@ -238,27 +240,28 @@ public class InOut {
      * @param preStatus : 기존 등록되어 있는 상태 객체
      * @return 기존 상태 다른 상태 객체 or (다른 상태를 입력하지 않고 종료를 원할 때,) null
      */
-    public Status inStatus(Status preStatus) {
+    public Status inStatus(Status preStatus) throws ExitThisPage {
+        List<Integer> notAllowed = List.of(preStatus.ordinal() + 1);
+
         while (true) {
             System.out.println("\n----------------------------------");
             System.out.println("수강생 상태 수정 중...\n");
-            System.out.printf("현재 수강생 상태 : %s\n", preStatus.toString());
-            String status = this.enterType("수정할 상태를 입력하세요.");
+            System.out.printf("현재 수강생 상태 : %s\n\n", preStatus);
+            System.out.println(this.activatedOrNot(preStatus.equals(Status.GREEN), "1. GREEN"));
+            System.out.println(this.activatedOrNot(preStatus.equals(Status.YELLOW), "2. YELLOW"));
+            System.out.println(this.activatedOrNot(preStatus.equals(Status.RED), "3. RED"));
+            System.out.println("4. 이전 페이지로 돌아가기");
+            int input = this.enterType("상태를 선택해 주십시오.", 1, 4, true, notAllowed, 0);
 
-            try {
-                Status newStatus = this.ck.statusInGYR(status);
-                this.ck.notSameStatus(newStatus, preStatus);
-                return newStatus;
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
-            }
-
-            try {
-                this.inExit("수강생 상태 수정");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return null;
+            switch (input) {
+                case 1 :
+                    return Status.GREEN;
+                case 2 :
+                    return Status.YELLOW;
+                case 3 :
+                    return Status.RED;
+                case 4 :
+                    throw new ExitThisPage();
             }
         }
     }
@@ -280,15 +283,11 @@ public class InOut {
             int input = 0;
 
             if (type == 1) {
-                System.out.println("1. 필수 과목    2. 선택 과목    3. 전체 과목");
+                System.out.printf("1. %s 과목    2. %s 과목    3. %s 과목\n", DataBase.SUBJECT_TYPE_MANDATORY, DataBase.SUBJECT_TYPE_CHOICE, DataBase.SUBJECT_TYPE_ALL);
                 input = this.enterType("\n과목 분류 선택해 주십시오.", 1, 3, 0);
             } else if (type == 0) {
-                System.out.println("1. 필수 과목    2. 선택 과목");
+                System.out.printf("1. %s 과목    2. %s 과목\n", DataBase.SUBJECT_TYPE_MANDATORY, DataBase.SUBJECT_TYPE_CHOICE);
                 input = this.enterType("\n과목 분류 선택해 주십시오.", 1, 2, 0);
-            }
-
-            if (input == 0) {
-                continue;
             }
 
             switch (input) {
@@ -297,11 +296,7 @@ public class InOut {
                 case 2 :
                     return DataBase.SUBJECT_TYPE_CHOICE;
                 case 3 :
-                    if (type == 1) {
-                        return "모든";
-                    }
-                    break;
-                default :
+                    return DataBase.SUBJECT_TYPE_ALL;
             };
         }
     }
@@ -330,9 +325,10 @@ public class InOut {
                 Subject subject = this.db.getSubjectById(subjectType, subjectId);
                 this.ck.notJoinedSubject(subject, joinedSubjectList);
                 return subject;
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
+            } catch (NotExistException nee) {
+                System.out.println(nee.getMessage());
+            } catch (BadInputException bie) {
+                System.out.println(bie.getMessage());
             }
 
         }
@@ -347,7 +343,7 @@ public class InOut {
     public Subject inSubjectId(Student student, String subjectType) {
         List<Subject> subjectList;
 
-        if (subjectType.equals("모든")) {
+        if (subjectType.equals(DataBase.SUBJECT_TYPE_ALL)) {
             subjectList = student.getAllSubjects();
         } else {
             subjectList = student.getSubjectList(subjectType);
@@ -359,7 +355,7 @@ public class InOut {
             System.out.printf("[ 수강 중인 %s 과목 목록 ]\n", subjectType);
 
             for (Subject subject : subjectList) {
-                int round = student.getScoreCnt(subject.getSubjectId());
+                int round = student.getLastRound(subject.getSubjectId());
 
                 System.out.printf("%s. %s (%d회차까지 점수 등록)\n", subject.getSubjectId(), subject.getSubjectName(), round);
             }
@@ -370,9 +366,10 @@ public class InOut {
                 Subject subject = this.db.getSubjectById(subjectType, subjectId);
                 this.ck.isJoinedSubject(subject, subjectList);
                 return subject;
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
+            } catch (BadInputException bie) {
+                System.out.println(bie.getMessage());
+            } catch (NotExistException nee) {
+                System.out.println(nee.getMessage());
             }
 
         }
@@ -391,11 +388,9 @@ public class InOut {
             System.out.printf("[ %s ] %d 회차 점수 등록 중...\n", subjectName, round);
             int testScore = this.enterType("점수를 입력해 주십시오.", 0, 100, -1);
 
-            if (testScore == -1) {
-                continue;
+            if (testScore != -1) {
+                return testScore;
             }
-
-            return testScore;
         }
     }
 
@@ -425,10 +420,16 @@ public class InOut {
             try {
                 this.ck.notSameScore(newScore, preScore);
                 flag = false;
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
-                return -1;
+            } catch (BadInputException be) {
+                System.out.println(be.getMessage());
+
+                try {
+                    this.inExit("점수 수정");
+                } catch (ExitThisPage e) {
+                    System.out.println(e.getMessage());
+                    newScore =  -1;
+                    flag = false;
+                }
             }
         }
 
@@ -440,57 +441,64 @@ public class InOut {
      * @param student : 수강생 객체
      * @param subjectId : 과목 고유 번호
      * @return 점수를 수정할 회차 or  (유효한 회차를 입력하지 않고 종료 시,) 0
-     * @throws BadInputException : 해당 과목에
+     * @throws NotExistException : 해당 과목에 등록된 점수가 존재하지 않을 때, 발생
      */
-    public int inRound(Student student, String subjectId) throws BadInputException {
-        int max = student.getScoreCnt(subjectId);
+    public int inRound(Student student, String subjectId) throws NotExistException {
+        int max = student.getLastRound(subjectId);
 
         if (max == 0) {
-            throw new BadInputException("해당 과목의 등록된 점수가 존재하지 않습니다.", "점수를 1회차 이상 등록 후, 수정 가능합니다.");
+            throw new NotExistException("해당 과목의 등록된 점수", "점수를 1회차 이상 등록 후, 수정 가능합니다.");
         }
 
         while (true) {
             System.out.println("\n----------------------------------");
             System.out.println("수정 회차 선택 중...\n");
-            int round = this.enterType("회차를 입력하십시오. (선택 가능 회차 : 1 ~ " + max + ")", 1, max, 0);
 
-            if (round == 0) {
-                continue;
+            StringBuilder sb = new StringBuilder();
+            sb.append("회차를 입력하십시오. (선택 가능 회차 : 1");
+            if (max > 1) {
+                sb.append(" ~ ");
+                sb.append(max);
             }
+            sb.append(")");
 
-            return round;
+            int round = this.enterType(sb.toString(), 1, max, 0);
+
+            if (round != 0) {
+                return round;
+            }
         }
     }
 
     /**
      * 종료 여부 입력
      */
-    public void inExit(String message) throws Exception {
+    public void inExit(String message) throws ExitThisPage {
         String exit = this.enterType(this.concatStrings("\n-----------------------------------------------------------------\n", message, "을(를) 종료하시겠습니까? (종료 : exit 입력)"));
 
         if (exit.equals("exit")) {
-            throw new Exception("\n현재 페이지를 종료하고 이전 페이지로 돌아갑니다.");
+            throw new ExitThisPage();
         }
     }
 
 
     // 출력
 
-    /**
-     * 수강생 목록 출력
-     * @param studentList : 수강생 객체 리스트
-     * @throws NotExistException 조회된 수강생이 존재하지 않으면 발생하는 예외
-     */
-    public void printStudentList(List<Student> studentList) throws NotExistException {
-        if (studentList == null || studentList.isEmpty()) {
-            throw new NotExistException("해당 상태의 수강생");
-        }
-
-        for (Student student : studentList) {
-            System.out.printf("%s. %s\n", student.getStudentId(), student.getStudentName());
-        }
-        System.out.printf("[ 총 %s명의 수강생이 조회되었습니다. ] \n", studentList.size());
-    }
+//    /**
+//     * 수강생 목록 출력
+//     * @param studentList : 수강생 객체 리스트
+//     * @throws NotExistException 조회된 수강생이 존재하지 않으면 발생하는 예외
+//     */
+//    public void printStudentList(List<Student> studentList) throws NotExistException {
+//        if (studentList == null || studentList.isEmpty()) {
+//            throw new NotExistException("등록된 수강생");
+//        }
+//
+//        for (Student student : studentList) {
+//            System.out.printf("%s. %s\n", student.getStudentId(), student.getStudentName());
+//        }
+//        System.out.printf("[ 총 %s명의 수강생이 조회되었습니다. ] \n", studentList.size());
+//    }
 
 
 
