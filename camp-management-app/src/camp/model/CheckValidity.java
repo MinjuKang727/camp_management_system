@@ -2,7 +2,6 @@ package camp.model;
 
 import camp.model.Exception.BadInputException;
 import camp.model.Exception.NotExistException;
-import camp.model.Exception.NotReachedMinException;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -30,7 +29,7 @@ public class CheckValidity {
         }
 
         if (notAllowed.contains(input)) {
-            throw new BadInputException("\n해당 항목은 현재 이용할 수 없습니다.", "수강생 관리와 관련된 항목입니다. 먼저 수강생을 등록 후, 이용해 주십시오.");
+            throw new BadInputException("\n해당 항목은 현재 이용할 수 없습니다.", "다른 항목을 선택해 주십시오.");
         }
     }
 
@@ -108,11 +107,11 @@ public class CheckValidity {
 
     //  과목  //
     // 과목 타입별 수강신청 최소 과목수 만족 여부 체크
-    public boolean satisfySubjectCnt(Student student, String subjectType, int min, int total) throws NotReachedMinException {
+    public boolean satisfySubjectCnt(Student student, String subjectType, int min, int total) throws NotReachedMinJoin {
         int joinedCnt = student.getSubjectCnt(subjectType);
 
         if (joinedCnt < min) {
-            throw new NotReachedMinException( min, joinedCnt);
+            throw new NotReachedMinJoin( min, joinedCnt);
         } else if (joinedCnt >= total) {
             System.out.println("\n모든 과목을 수강 신청하였습니다.");
             System.out.println("해당 과목 수강 신청이 종료됩니다.");

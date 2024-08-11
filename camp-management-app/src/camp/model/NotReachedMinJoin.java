@@ -1,11 +1,11 @@
-package camp.model.Exception;
+package camp.model;
 
-public class NotReachedMinException extends Exception {
+public class NotReachedMinJoin extends Exception {
     private StringBuilder sb;
     private String message;
     private String hint = "";
 
-    public NotReachedMinException(int min, int joinedCnt) {
+    public NotReachedMinJoin(int min, int joinedCnt) {
         this.message = "최소 수강 신청 과목수 미충족";
         this.setHint(min, joinedCnt);
     }

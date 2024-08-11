@@ -1,7 +1,5 @@
 package camp.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Viewer {
@@ -41,7 +39,7 @@ public class Viewer {
             System.out.println("\n==================================");
             System.out.println("내일배움캠프 수강생 관리 프로그램 실행 중...\n");
             System.out.println("1. 수강생 관리");
-            System.out.println(this.inOut.concatString("2. 점수 관리", noStudent));
+            System.out.println(this.inOut.concatString(noStudent, "2. 점수 관리"));
             System.out.println("3. 프로그램 종료");
             int input = this.inOut.enterType("\n관리 항목을 선택해 주십시오.", 1, 3, noStudent, notAllowed, 0);
 
@@ -81,11 +79,11 @@ public class Viewer {
             System.out.println("\n==================================");
             System.out.println("수강생 관리 실행 중...\n");
             System.out.println("1. 수강생 등록");
-            System.out.println(this.inOut.concatString("2. 수강생 목록 조회", noStudent));
-            System.out.println(this.inOut.concatString("3. 수강생 정보 조회", noStudent));
-            System.out.println(this.inOut.concatString("4. 수강생 정보 수정", noStudent));
-            System.out.println(this.inOut.concatString("5. 상태별 수강생 목록 조회", noStudent));
-            System.out.println(this.inOut.concatString("6. 수강생 삭제", noStudent));
+            System.out.println(this.inOut.concatString(noStudent, "2. 수강생 목록 조회"));
+            System.out.println(this.inOut.concatString(noStudent, "3. 수강생 정보 조회"));
+            System.out.println(this.inOut.concatString(noStudent, "4. 수강생 정보 수정"));
+            System.out.println(this.inOut.concatString(noStudent, "5. 상태별 수강생 목록 조회"));
+            System.out.println(this.inOut.concatString(noStudent, "6. 수강생 삭제"));
             System.out.println("7. 메인 화면 이동");
             int input = this.inOut.enterType("\n관리 항목을 선택해 주십시오.",1, 7, noStudent, notAllowed, 0);
 
@@ -139,7 +137,7 @@ public class Viewer {
                     break;
                 }
                 case 1 -> this.management.addScoreInSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
-                case 2 -> this.management.editNthGradeOfSubject(); // 수강생의 과목별 회차 점수 수정
+                case 2 -> this.management.editNthScoreOfSubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> this.management.displayGradesOfSubject(); // 수강생의 특정 과목 회차별 등급 조회
                 case 4 -> this.management.displaySubjectAvgGrade();
                 case 5 -> this.management.displayMandatorySubjectAvgGradeInStatus();

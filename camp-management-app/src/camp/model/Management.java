@@ -2,7 +2,6 @@ package camp.model;
 
 import camp.model.Exception.BadInputException;
 import camp.model.Exception.NotExistException;
-import camp.model.Exception.NotReachedMinException;
 
 import java.util.List;
 
@@ -39,6 +38,11 @@ public class Management {
         System.out.println("\n----------------------------------");
         System.out.println("수강생 상태 등록 중...\n");
         Status status = this.inOut.inStatus();
+
+        if (status == null) {
+            return;
+        }
+
         student.setStatus(status);
         status.addStudent(student);
 
@@ -112,7 +116,7 @@ public class Management {
                     String more = this.inOut.enterType(this.inOut.concatStrings("\n", subjectType, " 과목 수강 신청을 더 하시겠습니까? (더 수강 신청 more 입력)"));
                     flag = more.equals("more");
                 }
-            } catch (NotReachedMinException e) {
+            } catch (NotReachedMinJoin e) {
                 System.out.println(e.getMessage());
                 System.out.println(e.getHint());
             }
@@ -139,7 +143,7 @@ public class Management {
             String subjectName = subject.getSubjectName();
 
             // 회차 유효성 검사
-            int round = student.getScoreCnt(subjectId) + 1;
+            int round = student.getLastRound(subjectId) + 1;
 
             try {
                 this.ck.roundUnder10(round);
@@ -176,7 +180,7 @@ public class Management {
     }
 
     // 수강생의 과목별 회차 점수 수정
-    public void editNthGradeOfSubject() {
+    public void editNthScoreOfSubject() {
         // 수강생 고유 번호 입력
         Student student = this.inOut.inStudentId();
 
@@ -200,13 +204,8 @@ public class Management {
             Score score = student.getScore(subjectId, round);
             int newScore = this.inOut.inTestScore(score);
 
-            if (newScore < 0) {
-                try {
-                    this.inOut.inExit("현재 수강생의 과목별 회차 점수 수정");
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    return;
-                }
+            if (newScore == -1) {
+                return;
             }
 
             String newGrade = this.getGrade(newScore, subjectType);       // 위에서 받은 과목 타입이랑 새로운 점수를 넣어서 새로운 등급을 받는다
@@ -249,7 +248,7 @@ public class Management {
 
         try {
             scoreList = student.getScoreList(subjectId);
-        } catch (BadInputException e) {
+        } catch (NotExistException e) {
             System.out.println(e.getMessage());
             return;
         }
@@ -306,7 +305,7 @@ public class Management {
                     System.out.printf(" %d회차 : %d(%s) /", score.getRound(), score.getTestScore(), score.getGrade());
                 }
                 System.out.println();
-            } catch (BadInputException e) {
+            } catch (NotExistException e) {
                 continue;
             }
 
@@ -364,6 +363,7 @@ public class Management {
         Status preStatus = student.getStatus();  // 기존 상태
 
         Status newStatus = this.inOut.inStatus(preStatus);
+
         if (newStatus == null) {
             return;
         }
@@ -376,35 +376,14 @@ public class Management {
 
     // 상태별 수강생 목록 조회
     public void displayStudentsInStatus() {
-        boolean flag = true;
-        Status status = null;
+        System.out.println("\n==================================");
+        System.out.println("상태별 수강생 목록 조회 실행 중...\n");
 
-        while (flag) {
-            System.out.println("\n==================================");
-            System.out.println("상태별 수강생 목록 조회 실행 중...\n");
-            System.out.println("1. GREEN");
-            System.out.println("2. YELLOW");
-            System.out.println("3. RED");
-            System.out.println("4. 이전 페이지로 돌아가기");
-            int input = this.inOut.enterType("\n조회할 상태를 선택해 주십시오.", 1, 4, 0);
+        // 조회할 상태 입력
+        Status status = this.inOut.inStatus();
 
-            switch (input) {
-                case 1 :
-                    status = Status.GREEN;
-                    flag = false;
-                    break;
-                case 2 :
-                    status = Status.YELLOW;
-                    flag = false;
-                    break;
-                case 3 :
-                    status = Status.RED;
-                    flag = false;
-                    break;
-                case 4 :
-                    return;
-                default :
-            }
+        if (status == null) {
+            return;
         }
 
         System.out.println("\n----------------------------------");
@@ -441,7 +420,7 @@ public class Management {
                     for (Score score : scoreList) {
                         this.db.removeScore(score);
                     }
-                } catch (BadInputException e) {
+                } catch (NotExistException e) {
                     continue;
                 }
             }
@@ -486,7 +465,7 @@ public class Management {
                 double subjectAvg = subjectTotal / scoreList.size();
                 String subejectAvgGrade = this.getGrade(subjectAvg, subjectType);
                 System.out.printf("- %s : %s 등급\n", subject.getSubjectName(), subejectAvgGrade);
-            } catch (BadInputException e) {
+            } catch (NotExistException e) {
                 continue;
             }
         }
@@ -499,6 +478,10 @@ public class Management {
         // 상태 입력
         Status status = this.inOut.inStatus();
 
+        if (status == null) {
+            return;
+        }
+
         List <Student> studentList = status.getStudentList();
 
         try {
@@ -509,7 +492,9 @@ public class Management {
             return;
         }
 
-        System.out.println("\n[수강생 고유 번호] [수강생 이름] [필수 과목 평균 등급]");
+        System.out.println("\n----------------------------------");
+        System.out.printf("[ 상태 : %s ] 수강생들의 필수 과목 평균 등급 조회 결과\n", status);
+        assert studentList != null;
         for (Student student : studentList) {
             String studentId = student.getStudentId();
             String studentName = student.getStudentName();
@@ -527,7 +512,7 @@ public class Management {
                         count++;
                     }
 
-                } catch (BadInputException e) {
+                } catch (NotExistException e) {
                     continue;
                 }
             }

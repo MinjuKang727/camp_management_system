@@ -3,6 +3,7 @@ package camp.model;
 import camp.model.Exception.BadInputException;
 import camp.model.Exception.NotExistException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -34,9 +35,12 @@ public class InOut {
         return this.sb.toString();
     }
 
-    public String concatString(String title , boolean flag) {
+    public String concatString(boolean flag, String...str) {
         this.sb = new StringBuilder();
-        this.sb.append(title);
+
+        for (String s : str) {
+            this.sb.append(s);
+        }
 
         if (flag) {
             this.sb.append(" (비활성)");
@@ -55,17 +59,17 @@ public class InOut {
      * @param msg : 입력 안내 메세지 문자열
      * @param min : 입력 유효값 범위의 최소 정수
      * @param max : 입력 유효값 범위의 최대 정수
-     * @param noStudent : DataBase의 studentStore에 저장된 Student 객체가 존재하는지 여부
+     * @param flag : DataBase의 studentStore에 저장된 Student 객체가 존재하는지 여부
      * @param notAllowed : 선택이 허용되지 않는 값 리스트
      * @return 유효 입력값(min 이상 max 이하의 ((noStudent == true인 경우,) notAllowed에 포함되지 않은) 양의 정수
      */
-    public int enterType(String msg, int min, int max, boolean noStudent, List<Integer> notAllowed, int exception) {
+    public int enterType(String msg, int min, int max, boolean flag, List<Integer> notAllowed, int exception) {
             System.out.println(msg);
 
             try {
                 String strInput = sc.nextLine();
                 int input = this.ck.isNumber(strInput);
-                if (noStudent) {
+                if (flag) {
                     this.ck.selecterRange(min, max, input, notAllowed);
                 } else {
                     this.ck.selecterRange(min, max, input);
@@ -81,12 +85,10 @@ public class InOut {
 
     public int enterType(String msg, int min, int max, int exception) {
             System.out.println(msg);
-            int input = exception;
-            String exit = "";
 
             try {
                 String strInput = sc.nextLine();
-                input = this.ck.isNumber(strInput);
+                int input = this.ck.isNumber(strInput);
                 this.ck.selecterRange(min, max, input);
                 return input;
             } catch (BadInputException e) {
@@ -182,7 +184,8 @@ public class InOut {
             try {
                 System.out.println("----------------------------------");
                 String studentId = this.enterType(DataBase.INDEX_TYPE_STUDENT);
-                return this.db.getStudentById(studentId);
+                Student student = this.db.getStudentById(studentId);
+                return student;
             } catch (NotExistException e) {
                 System.out.println(e.getMessage());
                 System.out.println(e.getHint());
@@ -200,7 +203,8 @@ public class InOut {
             try {
                 System.out.println("----------------------------------");
                 String studentId = this.enterType(DataBase.INDEX_TYPE_STUDENT);
-                return this.db.getStudentById(studentId);
+                Student student = this.db.getStudentById(studentId);
+                return student;
             } catch (NotExistException notExistException) {
                 System.out.println(notExistException.getMessage());
 
@@ -221,13 +225,24 @@ public class InOut {
      */
     public Status inStatus() {
         while (true) {
-            String strStatus = this.enterType("수강생 상태를 입력해 주십시오. (상태 종류 : GREEN, YELLOW, RED)");
+            System.out.println("1. GREEN");
+            System.out.println("2. YELLOW");
+            System.out.println("3. RED");
+            System.out.println("4. 이전 페이지로 돌아가기");
+            int input = this.enterType("상태를 선택해 주십시오.", 1, 4, 0);
 
-            try {
-                return this.ck.statusInGYR(strStatus);
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
+            switch (input) {
+                case 0 :
+                    break;
+                case 1 :
+                    return Status.GREEN;
+                case 2 :
+                    return Status.YELLOW;
+                case 3 :
+                    return Status.RED;
+                case 4 :
+                    return null;
+                default :
             }
         }
     }
@@ -239,26 +254,49 @@ public class InOut {
      * @return 기존 상태 다른 상태 객체 or (다른 상태를 입력하지 않고 종료를 원할 때,) null
      */
     public Status inStatus(Status preStatus) {
+        List<Integer> notAllowed = null;
+        int idx = 0;
+
+        switch (preStatus) {
+            case GREEN :
+                notAllowed = List.of(1);
+                idx = 1;
+                break;
+            case YELLOW :
+                notAllowed = List.of(2);
+                idx = 2;
+                break;
+            case RED :
+                notAllowed = List.of(3);
+                idx = 3;
+                break;
+            default :
+        }
+
+        assert notAllowed != null;
+
         while (true) {
             System.out.println("\n----------------------------------");
             System.out.println("수강생 상태 수정 중...\n");
-            System.out.printf("현재 수강생 상태 : %s\n", preStatus.toString());
-            String status = this.enterType("수정할 상태를 입력하세요.");
+            System.out.printf("현재 수강생 상태 : %s\n\n", preStatus);
+            System.out.println(this.concatString(idx == 1, "1. GREEN"));
+            System.out.println(this.concatString(idx == 2, "2. YELLOW"));
+            System.out.println(this.concatString(idx == 3, "3. RED"));
+            System.out.println("4. 이전 페이지로 돌아가기");
+            int input = this.enterType("상태를 선택해 주십시오.", 1, 4, true, notAllowed, 0);
 
-            try {
-                Status newStatus = this.ck.statusInGYR(status);
-                this.ck.notSameStatus(newStatus, preStatus);
-                return newStatus;
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
-            }
-
-            try {
-                this.inExit("수강생 상태 수정");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return null;
+            switch (input) {
+                case 0 :
+                    break;
+                case 1 :
+                    return Status.GREEN;
+                case 2 :
+                    return Status.YELLOW;
+                case 3 :
+                    return Status.RED;
+                case 4 :
+                    return null;
+                default :
             }
         }
     }
@@ -359,7 +397,7 @@ public class InOut {
             System.out.printf("[ 수강 중인 %s 과목 목록 ]\n", subjectType);
 
             for (Subject subject : subjectList) {
-                int round = student.getScoreCnt(subject.getSubjectId());
+                int round = student.getLastRound(subject.getSubjectId());
 
                 System.out.printf("%s. %s (%d회차까지 점수 등록)\n", subject.getSubjectId(), subject.getSubjectName(), round);
             }
@@ -425,10 +463,17 @@ public class InOut {
             try {
                 this.ck.notSameScore(newScore, preScore);
                 flag = false;
-            } catch (BadInputException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getHint());
-                return -1;
+            } catch (BadInputException be) {
+                System.out.println(be.getMessage());
+                System.out.println(be.getHint());
+
+                try {
+                    this.inExit("점수 수정");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    newScore =  -1;
+                    flag = false;
+                }
             }
         }
 
@@ -443,7 +488,7 @@ public class InOut {
      * @throws BadInputException : 해당 과목에
      */
     public int inRound(Student student, String subjectId) throws BadInputException {
-        int max = student.getScoreCnt(subjectId);
+        int max = student.getLastRound(subjectId);
 
         if (max == 0) {
             throw new BadInputException("해당 과목의 등록된 점수가 존재하지 않습니다.", "점수를 1회차 이상 등록 후, 수정 가능합니다.");
