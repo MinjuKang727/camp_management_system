@@ -4,46 +4,46 @@ public class Score {
     private String scoreId;
     private String studentId;
     private String subjectName;
-    private int testCnt;
+    private int round;
     private int testScore;
-    private String rank;
-    private Status status;
+    private String grade;
 
 
-    public Score(String seq, String studentId, String subjectName, int testCnt, int testScore, String rank) {
+    public Score(String seq, String studentId, String subjectName, int round, int testScore, String grade) {
         this.scoreId = seq;
         this.studentId = studentId;
         this.subjectName = subjectName;
-        this.testCnt = testCnt;
+        this.round = round;
         this.testScore = testScore;
-        this.rank = rank;
+        this.grade = grade;
     }
 
     // Getter
-    public String getScoreId() { return scoreId; }
+    public String getScoreId() { return this.scoreId; }
 
-    public String getStudentId() { return studentId; }
+    public String getStudentId() { return this.studentId; }
 
-    public String getSubjectName() { return subjectName; }
+    public String getSubjectName() { return this.subjectName; }
 
-    public int getTestCnt() { return testCnt; }
+    public int getRound() { return this.round; }
 
-    public int getTestScore() { return testScore; }
+    public int getTestScore() { return this.testScore; }
 
-    public String getRank() { return rank; }
+    public String getGrade() { return this.grade; }
 
     // SETTER
-    public void setSubjectName(String subjectName){ this.subjectName = subjectName; }
+    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
 
-    public void setTestCnt(int testCnt) { this.testCnt = testCnt; }
+    public void setRound(int round) { this.round = round; }
 
-    public void setTestScore(int testScore, String rank){
+    public void setTestScore(int testScore) { this.testScore = testScore; }
+
+    public void setScore(int testScore, String grade) {
         this.testScore = testScore;
-
-        if (!this.rank.equals(rank)) {
-            this.setRank(rank);
-        }
+        this.grade = grade;
     }
 
-    public void setRank(String rank) { this.rank = rank; }
+    public void setGrade(String grade) { this.grade = grade; }
+
+
 }

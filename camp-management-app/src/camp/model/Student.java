@@ -1,5 +1,8 @@
 package camp.model;
 
+import camp.model.Exception.BadInputException;
+import camp.model.Exception.NotExistException;
+
 import java.util.*;
 import java.util.ArrayList;
 
@@ -19,8 +22,8 @@ public class Student {
         this.studentId = seq;
         this.studentName = studentName;
         this.subjectMap = Map.of(
-                "필수", new ArrayList<Subject>(5),
-                "선택", new ArrayList<Subject>(4)
+                DataBase.SUBJECT_TYPE_MANDATORY, new ArrayList<Subject>(),
+                DataBase.SUBJECT_TYPE_CHOICE, new ArrayList<Subject>()
         );
         this.scoreMap = new HashMap<String, List<Score>>();
     }
@@ -40,35 +43,34 @@ public class Student {
 
     public int getSubjectCnt(String subjectType) {
         List<Subject> subjectList = this.subjectMap.get(subjectType);
-        int subjectCnt = subjectList.size();
-        return subjectCnt;
+        return subjectList.size();
     }
 
-    public int getScoreCnt(String subjectId) {
+    public int getLastRound(String subjectId) {
         List<Score> scoreList = this.scoreMap.get(subjectId);
         return scoreList.size();
     }
 
-    public List<Score> getScoreList(String subjectId) throws BadInputException {
+        public List<Score> getScoreList(String subjectId) throws NotExistException {
         List<Score> scoreList = this.scoreMap.get(subjectId);
 
         if (scoreList.isEmpty()) {
-            throw new BadInputException("해당 과목에 등록된 점수");
+            throw new NotExistException("해당 과목에 등록된 점수");
         }
 
         return scoreList;
     }
 
-    public Score getScore(String subjectId, int testCnt){
-        List<Score> scoreList = scoreMap.get(subjectId);
-        return scoreList.get(testCnt - 1);
+    public Score getScore(String subjectId, int round) {
+        List<Score> scoreList = this.scoreMap.get(subjectId);
+        return scoreList.get(round - 1);
     }
 
     public List<Subject> getAllSubjects() {
-        List<Subject> allSubjects = new ArrayList<>();
-        allSubjects.addAll(subjectMap.get("필수"));
-        allSubjects.addAll(subjectMap.get("선택"));
-        return allSubjects;
+        List<Subject> subjectList = new ArrayList<>();
+        subjectList.addAll(this.subjectMap.get(DataBase.SUBJECT_TYPE_MANDATORY));
+        subjectList.addAll(this.subjectMap.get(DataBase.SUBJECT_TYPE_CHOICE));
+        return subjectList;
     }
 
     public Status getStatus() {
