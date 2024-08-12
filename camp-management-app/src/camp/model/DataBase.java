@@ -1,7 +1,6 @@
 package camp.model;
 
-import camp.model.Exception.BadInputException;
-import camp.model.Exception.NotExistException;
+import camp.Exception.NotExistException;
 
 import java.util.*;
 
@@ -223,12 +222,4 @@ public class DataBase {
         this.studentMap.remove(student.getStudentId());
         this.studentStore.remove(student);
     }
-
-//    public void addScore(Score score) {
-//        this.scoreStore.add(score);
-//    }
-//
-//    public void removeScore(Score score) {
-//        this.scoreStore.remove(score);
-//    }
 }

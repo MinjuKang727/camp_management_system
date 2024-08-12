@@ -1,8 +1,11 @@
-package camp.model;
+package camp.display;
 
-import camp.model.Exception.BadInputException;
-import camp.model.Exception.ExitThisPage;
-import camp.model.Exception.NotExistException;
+import camp.Exception.CheckValidity;
+import camp.model.*;
+import camp.Exception.BadInputException;
+import camp.Exception.ExitThisPage;
+import camp.Exception.NotExistException;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -480,27 +483,6 @@ public class InOut {
             throw new ExitThisPage();
         }
     }
-
-
-    // 출력
-
-//    /**
-//     * 수강생 목록 출력
-//     * @param studentList : 수강생 객체 리스트
-//     * @throws NotExistException 조회된 수강생이 존재하지 않으면 발생하는 예외
-//     */
-//    public void printStudentList(List<Student> studentList) throws NotExistException {
-//        if (studentList == null || studentList.isEmpty()) {
-//            throw new NotExistException("등록된 수강생");
-//        }
-//
-//        for (Student student : studentList) {
-//            System.out.printf("%s. %s\n", student.getStudentId(), student.getStudentName());
-//        }
-//        System.out.printf("[ 총 %s명의 수강생이 조회되었습니다. ] \n", studentList.size());
-//    }
-
-
 
     // GETTER
     public DataBase getDataBase() { return this.db; }

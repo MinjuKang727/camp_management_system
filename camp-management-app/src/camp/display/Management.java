@@ -1,9 +1,7 @@
-package camp.model;
+package camp.display;
 
-import camp.model.Exception.AddSubjectException;
-import camp.model.Exception.BadInputException;
-import camp.model.Exception.ExitThisPage;
-import camp.model.Exception.NotExistException;
+import camp.Exception.*;
+import camp.model.*;
 
 import java.util.List;
 
@@ -314,7 +312,7 @@ public class Management {
                     System.out.printf(" %d회차 : %d(%s) /", score.getRound(), score.getTestScore(), score.getGrade());
                 }
                 System.out.println();
-            } catch (NotExistException ignore) {}
+            } catch (NotExistException ignored) {}
         }
     }
 
@@ -431,19 +429,6 @@ public class Management {
         String remove = this.inOut.enterType(String.format("\n[%s. %s] 수강생을 정말 삭제하시겠습니까? (삭제 : remove 입력)", studentId, studentName));
 
         if (remove.equals("remove")) {
-            // 점수 객체 삭제
-//            List<Subject> subjectList = student.getAllSubjects();
-//            for (Subject subject : subjectList) {
-//                try {
-//                    List<Score> scoreList = student.getScoreList(subject.getSubjectId());
-//                    for (Score score : scoreList) {
-//                        this.db.removeScore(score);
-//                    }
-//                } catch (NotExistException e) {
-//                    continue;
-//                }
-//            }
-
             // Status의 리스트에서 수강생 객체 삭제
             Status status = student.getStatus();
             status.removeStudent(student);
@@ -484,7 +469,7 @@ public class Management {
                 double subjectAvg = subjectTotal / scoreList.size();
                 String subejectAvgGrade = this.getGrade(subjectAvg, subjectType);
                 System.out.printf("- %s : %s 등급\n", subject.getSubjectName(), subejectAvgGrade);
-            } catch (NotExistException ignore) {}
+            } catch (NotExistException ignored) {}
         }
     }
 
@@ -530,7 +515,7 @@ public class Management {
                         totalScore += score.getTestScore(); // 점수 합산
                         count++;
                     }
-                } catch (NotExistException ignore) {}
+                } catch (NotExistException ignored) {}
             }
 
             if (count == 0) {
