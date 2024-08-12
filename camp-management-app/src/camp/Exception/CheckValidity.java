@@ -1,8 +1,7 @@
-package camp.model;
+package camp.Exception;
 
-import camp.model.Exception.AddSubjectException;
-import camp.model.Exception.BadInputException;
-import camp.model.Exception.NotExistException;
+import camp.model.Student;
+import camp.model.Subject;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -71,24 +70,6 @@ public class CheckValidity {
             throw new BadInputException("\n입력한 이름이 기존에 등록되어있는 이름과 동일합니다.", "기존에 등록된 이름과 다른 이름을 입력해 주십시오.");
         }
     }
-
-    //  상태  //
-    // 상태값 유효성 검사
-//    public Status statusInGYR(String status) throws BadInputException {
-//        if (!Pattern.matches("(GREEN)|(YELLOW)|(RED)", status)) {
-//                throw new BadInputException("\n유효하지 않은 상태값을 입력하셨습니다.", "수강생 상태는 GREEN, YELLOW, RED 중 하나의 값만 입력가능합니다.");
-//        }
-//
-//        return Status.valueOf(status);
-//    }
-//
-//    // 기존 등록된 상태와 다른지 체크
-//    public void notSameStatus(Status newStatus, Status preStatus) throws BadInputException {
-//        if (newStatus.equals(preStatus)) {
-//            throw new BadInputException("\n입력한 상태가 기존에 등록되어있는 상태와 동일합니다.", "기존에 등록된 상태와 다른 상태를 입력해 주세요.");
-//        }
-//    }
-
 
     //  수강생  //
     // 조회된 수강생 리스트에 수강생이 존재하는지 체크

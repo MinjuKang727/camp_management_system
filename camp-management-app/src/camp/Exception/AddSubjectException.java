@@ -1,4 +1,4 @@
-package camp.model.Exception;
+package camp.Exception;
 
 public class AddSubjectException extends Exception {
     private String message;
@@ -21,16 +21,8 @@ public class AddSubjectException extends Exception {
     public boolean getFlag() { return this.flag; }
 
     // SETTER
-//    private void setHint(String hint) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(this.message);
-//        sb.append("\n hint : ");
-//        sb.append(hint);
-//        this.message = sb.toString();
-//    }
-
     private void setHint(int min, int joined) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append(this.message);
         sb.append("\n hint : 해당 과목은 최소 ");
         sb.append(min);

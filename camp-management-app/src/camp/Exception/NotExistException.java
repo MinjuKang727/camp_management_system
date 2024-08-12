@@ -1,4 +1,4 @@
-package camp.model.Exception;
+package camp.Exception;
 
 public class NotExistException extends Exception {
     private String message;
@@ -16,7 +16,7 @@ public class NotExistException extends Exception {
 
     // SETTER
     private void setMessage(String object) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append(object);
         sb.append("이(가) 존재하지 않습니다.");
 
@@ -24,7 +24,7 @@ public class NotExistException extends Exception {
     }
 
     private void setHint (String hint) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append(this.message);
         sb.append("\n hint : ");
         sb.append(hint);
