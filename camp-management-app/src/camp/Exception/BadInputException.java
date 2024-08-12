@@ -1,4 +1,4 @@
-package camp.model.Exception;
+package camp.Exception;
 
 public class BadInputException extends Exception {
     private String message;
@@ -18,7 +18,7 @@ public class BadInputException extends Exception {
     // SETTER
 
     private void setHint(String hint) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append(this.message);
         sb.append("\n hint : ");
         sb.append(hint);
@@ -27,7 +27,7 @@ public class BadInputException extends Exception {
     }
 
     private void setHint(int min, int max) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append(this.message);
         sb.append("\n hint : ");
         sb.append(min);

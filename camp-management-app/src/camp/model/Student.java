@@ -1,7 +1,7 @@
 package camp.model;
 
-import camp.model.Exception.BadInputException;
-import camp.model.Exception.NotExistException;
+import camp.Exception.BadInputException;
+import camp.Exception.NotExistException;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -12,11 +12,6 @@ public class Student {
     private Map<String, List<Subject>> subjectMap; // (key, value) = (SUBJECT_TYPE, subjectList), 과목 타입별 과목을 담을 Map
     private Map<String, List<Score>> scoreMap;  // (key, value) = (subjectId, 길이 10의 Score객체 배열), 과목별 성적을 담을 Map
     private Status status;
-
-    // 점수 받는걸 넣으면 이거 하나만 쓰면 돼요
-    // 리스트로 하면은 리스트가 2개 필요하죠 (필수랑 선택)
-    // map (key / value) key: 필수 5개랑 선택 4개  value: 점수
-    // Map<String(subjectName),Integer(estScore)> 이름 = new (Linked)HashMap<>(); // 입력된 순서대로 출력 가능하니까
 
     public Student(String seq, String studentName) {
         this.studentId = seq;

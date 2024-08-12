@@ -1,4 +1,6 @@
-package camp.model;
+package camp.display;
+
+import camp.model.DataBase;
 
 import java.util.List;
 
@@ -7,12 +9,7 @@ public class Viewer {
     private final DataBase db;
     private final Management management;
 
-//    public Viewer() {
-//        this.db = new DataBase();
-//        this.inOut = new InOut(this.db);
-//        this.management = new Management(this.inOut);
-//    }
-
+    // 생성자
     public Viewer(int SUBJECT_MIN_MANDATORY, int SUBJECT_MIN_CHOICE) {
         this.db = new DataBase(SUBJECT_MIN_MANDATORY, SUBJECT_MIN_CHOICE);
         this.inOut = new InOut(this.db);
