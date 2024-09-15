@@ -1,4 +1,4 @@
-  <p align="center"><a href="https://sequoia-carpet-385.notion.site/13EST-8c48039d6e66406e84d4525c4f964bfc?pvs=4" > <img src="https://github.com/user-attachments/assets/ed91a5bb-9551-4145-a89d-246f5599da34" style="width:30%;"></a></p>
+  <p align="center"><a href="https://sequoia-carpet-385.notion.site/13EST-8c48039d6e66406e84d4525c4f964bfc?pvs=4" > <img src="https://github.com/MinjuKang727/camp_management_system/blob/main/dancing-13EST.gif" style="width:40%;"></a></p>
 
 
 
